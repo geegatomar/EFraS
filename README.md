@@ -41,10 +41,16 @@ The project work is broadly divided into the following parts:
 ---
 
 # Substrate network
-## Spine-leaf topology
+
+## Spine-Leaf Topology
+Spine-Leaf Architecture is a two-layer, full-mesh topology composed of a leaf layer and a spine layer, with the leaf and spine switches.
 TODO
+
+TODO: Explain why we have added an additional layer of host switches. Add draw io diagrams for this.
+
 ## IP Addressing
 TODO
+
 ## Flow table entry population
 TODO
 
@@ -52,7 +58,9 @@ TODO
 
 
 # VNR mapping
+
 ## VLAN isolation
 TODO
+
 ## Traffic control (bandwidth restriction)
 TODO
