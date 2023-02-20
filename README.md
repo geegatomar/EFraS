@@ -38,3 +38,21 @@ The project work is broadly divided into the following parts:
 2. Iperf for bandwidth links
 3. Cpu limit tests
 
+---
+
+# Substrate network
+## Spine-leaf topology
+TODO
+## IP Addressing
+TODO
+## Flow table entry population
+TODO
+
+---
+
+
+# VNR mapping
+## VLAN isolation
+TODO
+## Traffic control (bandwidth restriction)
+TODO
