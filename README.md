@@ -57,10 +57,21 @@ TODO
 ---
 
 
-# VNR mapping
+# VNR Mapping
 
 ## VLAN isolation
 TODO
 
 ## Traffic control (bandwidth restriction)
+TODO
+
+## CPU restriction
+TODO
+
+---
+
+
+# VNE Algorithm
+
+## Random testing algorithm
 TODO
