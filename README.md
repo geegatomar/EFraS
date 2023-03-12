@@ -46,7 +46,7 @@ The project work is broadly divided into the following parts:
 Spine-Leaf Architecture is a two-layer, full-mesh topology composed of a leaf layer and a spine layer, with the leaf and spine switches.
 TODO
 
-TODO: Explain why we have added an additional layer of host switches. Add draw io diagrams for this.
+TODO: Explain why we have added an additional layer of host switches (i.e. *Modified spine-leaf topology*. Add draw io diagrams for this.
 
 ## IP Addressing
 TODO
