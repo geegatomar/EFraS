@@ -95,6 +95,7 @@ Since we want the path taken by any packet from one host to another host to be a
     - For **h6 to h5** (reply): &nbsp; &nbsp; h6  &rarr;  sh6  &rarr;  s2_3  &rarr;  sh5  &rarr;  h5
     </br> Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
 </br>
+
 ![flow-table-example-diagram](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/flow_table_example.png?raw=true)
 
 ---
