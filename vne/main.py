@@ -91,4 +91,4 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
 
 if __name__ == '__main__':
     setLogLevel('info')
-    runVNE(sl_factor=4, ll_factor=3, hl_factor=2)
+    runVNE(sl_factor=3, ll_factor=3, hl_factor=2)
