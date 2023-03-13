@@ -118,13 +118,24 @@ Logically, it means that they all are under the host with IP subnet of '10.1.0 /
 
 This was also the *reason to add the additional layer of host switches* (i.e. Modified spine-leaf topology) so that the host switches can represent every block of substrate network host, and every additional host under it would represent the virtual hosts mapped onto it.
 
-## VLAN isolation
-TODO
+### Example
+Consider for the given substrate network (sl_factor = 3, ll_factor = 2, and hl_factor = 2), we get two Virtual Network Requests, such that:
+- VNR1, having 2 virtual hosts (let's call them vnr1_vh1, vnr1_vh2). 
+- VNR2, having 3 virtual hosts (let's call them vnr2_vh1, vnr2_vh2, vnr2_vh3).
 
-TODO: where each VNR's hosts belong to a separate VLAN and there is isolation between .
+In the example here, the 2 virtual hosts of VNR1 were mapped onto the substrate hosts h3 and h7. And the 3 virtual hosts of VNR2 were mapped onto the substrate hosts h3, h5 and h6. 
+
+![vnr-mapping-example-diagram](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/vnr_mapping_example.png?raw=true)
+
+Note that the IP addressing of these virtual hosts is done as per the logic explained above.
 
 
-## Traffic control (bandwidth restriction)
+## VLAN Isolation
+Once the IP addressing of virtual hosts was figured out, the connectivity amongst every pair of host (all substrate and virtual hosts) is inherently present because of how the flow table entries were initially populated. This meant that a host of one VNR is able to communicate with a host of another VNR; and this behavior is undesirable. This is why we added VLAN logic to provide isolation between VNRs, i.e. hosts of one VNR shall be able to communicate with each other, but not communicate with any other host on the network. 
+For implementing this, VLAN IDs have been used (where every VNR is given a new VLAN ID), and additional entries were added to the flow tables of the switches to confirm isolation between different VLANs.
+
+
+## Traffic Control (bandwidth restriction)
 TODO
 
 ## CPU restriction
