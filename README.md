@@ -61,12 +61,14 @@ The **hl_factor** represents the number of hosts connected to each leaf layer sw
 </br>
 In this example; sl_factor = 3, ll_factor = 2, and hl_factor = 2.
 
-TODO
 
 
 ## Modified spine-leaf topology
-TODO
-TODO: Explain why we have added an additional layer of host switches (i.e. *Modified spine-leaf topology*. Add draw io diagrams for this.
+Since we eventually map virtual nodes (of VNRs) onto these substrate network hosts, to make the implementation (for VNR mapping) logically easier and more intuitive, we have added an additional layer of switches called the 'host layer switches'. Instead of every host being attached directly to the leaf layer switch (as seen above), now there is one additional switch of the '*host layer switch*' in between.
+The only modification in the above diagram is the 'host layer switches'; as can be seen below.
+</br></br>
+![spine-and-leaf-ip-addressed-modified](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/spine_leaf_ip_addressed_modified.png?raw=true)
+
 
 
 ## Flow table entry population
@@ -76,6 +78,9 @@ TODO
 
 
 # VNR Mapping
+
+## IP addressing of virtual hosts
+TODO: Explain why we have added an additional layer of host switches (i.e. *Modified spine-leaf topology*. Add draw io diagrams for this.
 
 ## VLAN isolation
 TODO
