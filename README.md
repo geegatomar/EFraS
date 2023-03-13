@@ -181,11 +181,25 @@ As of now, we have implemented a random testing algorithm as the default VNE alg
 ---
 
 # Expected Results
-TODO
+
+#### Shows how many VNRs were successfully mapped onto the substrate network (by using the selected VNE algorithm)
+In this example, 3 out of 4 VNRs were mapped successfully.
+![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results.png?raw=true)
+
+#### CPU tests passing
+![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results_cpu.png?raw=true)
+
+#### Ping tests passing
+![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results_ping.png?raw=true)
+
+#### Iperf tests passing
+![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results_iperf.png?raw=true)
+
 
 ---
 
 # Additional Information
+
 ## Why RYU Controller?
 Since the paths between every pair of host in our network is deterministic, the population of flow tables must be done at the beginning of network establishment itself. The logic for which is dependant on which type of switch it is (spine, leaf, or host layer switch), and is very specific to each switch, as can be seen in implementation here:
 
