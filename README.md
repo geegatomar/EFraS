@@ -182,3 +182,15 @@ As of now, we have implemented a random testing algorithm as the default VNE alg
 
 # Expected Results
 TODO
+
+---
+
+# Additional Information
+## Why RYU Controller?
+Since the paths between every pair of host in our network is deterministic, the population of flow tables must be done at the beginning of network establishment itself. The logic for which is dependant on which type of switch it is (spine, leaf, or host layer switch), and is very specific to each switch, as can be seen in implementation here:
+
+https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/5812f005daafef1e5eb86099ccd546e45c9a7c48/vne/substrate.py#L148
+
+Hence, it made sense to write code for this 'not-so-generalizable' logic in python mininet code itself, instead of putting it in a separate RYU controller. The controller is good at adding flow table entries for more generalizable (i.e. common for all switches) such as ARP flooding.
+
+The RYU controller can easily be eliminated if those ARP flooding logic is incorporated in the python mininet code itself. It just made logical sense to populate it via a controller since it's common for all switches, irrespective of which type of switchit is (spine, leaf, or host layer switch).
