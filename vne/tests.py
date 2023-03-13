@@ -58,7 +58,7 @@ def test_iperf_bandwidth_within_vnr_vhosts(net):
 
 def test_cpu_limits_for_all_hosts(net, duration=5):
     """ Test cpu limit for all hosts in the network."""
-    print("====================== Runnnig CPU limit test =========================")
+    print("\n\n====================== Runnnig CPU limit test =========================")
     cpu_result = net.runCpuLimitTest(cpu=1, duration=duration)
     ind = 0
     for h in net.hosts:
