@@ -183,7 +183,7 @@ As of now, we have implemented a random testing algorithm as the default VNE alg
 # Expected Results
 
 #### Shows how many VNRs were successfully mapped onto the substrate network (by using the selected VNE algorithm)
-In this example, 3 out of 4 VNRs were mapped successfully.
+In this example, mapping was found for 3 out of the 4 VNRs.
 ![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results.png?raw=true)
 
 #### CPU tests passing
