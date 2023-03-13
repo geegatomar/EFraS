@@ -48,7 +48,7 @@ Spine-Leaf Architecture is a two-layer, full-mesh topology composed of a leaf la
 </br>
 The substrate network (i.e. physical network onto which Virtual Network Requests will be mapped) in our project follows a spine-leaf architecture. Although we have added an additional layer of switches, called the 'host switch layer' for each host. More on why we did this is in the sections below.
 
-
+</br>
 ## IP Addressing
 The subnet for layer 1 (spine) switches starts with `10.0.0.0/8`, and addressing of further switches is done by varying the first octet in the dot-decimal notation.. So if there are 3 switches in layer 1 (spine), they will be addressed as '10.0.0.0/8', '11.0.0.0/8', '12.0.0.0/8', and will be named s1_1, s1_2, s1_3 (denoting layer 1 switch 1, 2, 3 respectively). The number of switches in the spine layer in represented as **sl_factor**.
 
@@ -62,7 +62,7 @@ The **hl_factor** represents the number of hosts connected to each leaf layer sw
 In this example; sl_factor = 3, ll_factor = 2, and hl_factor = 2.
 
 
-
+</br>
 ## Modified spine-leaf topology
 Since we eventually map virtual nodes (of VNRs) onto these substrate network hosts, to make the implementation (for VNR mapping) logically easier and more intuitive, we have added an additional layer of switches called the 'host layer switches'. Instead of every host being attached directly to the leaf layer switch (as seen above), now there is one additional switch of the '*host layer switch*' in between.
 The only modification in the above diagram is the addition of 'host layer switches'; as can be seen below.
@@ -70,7 +70,7 @@ The only modification in the above diagram is the addition of 'host layer switch
 ![spine-and-leaf-ip-addressed-modified](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/spine_leaf_ip_addressed_modified.png?raw=true)
 
 
-
+</br>
 ## Flow table entry population
 Since we want the path taken by any packet from one host to another host to be a *deterministic path*, we populate the flow table entries of every switch accordingly.
 
@@ -120,6 +120,8 @@ TODO
 
 # VNE Algorithm
 
+## Additional data structures maintained
 TODO: Explain the populate_path_between_hosts function here, and why we need to maintain a 'graph' data structure and all.
+
 ## Random testing algorithm
 TODO
