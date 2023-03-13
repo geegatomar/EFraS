@@ -129,7 +129,7 @@ Consider for the given substrate network (sl_factor = 3, ll_factor = 2, and hl_f
 - VNR1, having 2 virtual hosts (let's call them vnr1_vh1, vnr1_vh2). 
 - VNR2, having 3 virtual hosts (let's call them vnr2_vh1, vnr2_vh2, vnr2_vh3).
 
-In the example here, the 2 virtual hosts of VNR1 were mapped onto the substrate hosts h3 and h7. And the 3 virtual hosts of VNR2 were mapped onto the substrate hosts h3, h5 and h6. 
+In the example here, the 2 virtual hosts of VNR1 were mapped onto the substrate hosts h3 and h7. And the 3 virtual hosts of VNR2 were mapped onto the substrate hosts h3, h4 and h6. 
 
 ![vnr-mapping-example-diagram](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/vnr_mapping_example.png?raw=true)
 
