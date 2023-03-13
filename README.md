@@ -96,5 +96,6 @@ TODO
 
 # VNE Algorithm
 
+TODO: Explain the populate_path_between_hosts function here, and why we need to maintain a 'graph' data structure and all.
 ## Random testing algorithm
 TODO
