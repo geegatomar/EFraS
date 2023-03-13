@@ -95,7 +95,6 @@ Since we want the path taken by any packet from one host to another host to be a
     - For **h2 to h1** (reply): h2  &rarr;  sh2  &rarr;  s2_1  &rarr;  sh1  &rarr;  h1
     </br> Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
 
-
 TODO: add diagram
 
 ---
