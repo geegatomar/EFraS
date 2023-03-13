@@ -1,4 +1,4 @@
-# Virtual Network Embedding (VNE) emulation using mininet
+# Virtual Network Embedding (VNE) emulation using Mininet
 
 
 ## Getting Started
