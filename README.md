@@ -90,7 +90,7 @@ Since we want the path taken by any packet from one host to another host to be a
     - For **h10 to h1** (reply): &nbsp; &nbsp; h10 &rarr;  sh10  &rarr;  s2_5  &rarr;  s1_3  &rarr;  s2_1  &rarr;  sh1 &rarr;  h1
     </br> Note that the path followed by packet for request and reply must go through the same set of switches.
 
-2. Packet needs to be sent from h1 (11.0.0.0) to h2 (11.0.1.0). The path followed by the packet will be:
+2. Packet needs to be sent from h5 (11.0.0.0) to h6 (11.0.1.0). The path followed by the packet will be:
     - For **h5 to h6** (request): &nbsp; h5  &rarr;  sh5  &rarr;  s2_3  &rarr;  sh6  &rarr;  h6
     - For **h6 to h5** (reply): &nbsp; &nbsp; h6  &rarr;  sh6  &rarr;  s2_3  &rarr;  sh5  &rarr;  h5
     </br> Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
