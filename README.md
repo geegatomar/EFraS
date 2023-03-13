@@ -106,11 +106,20 @@ Since we want the path taken by any packet from one host to another host to be a
 
 # VNR Mapping
 
+So far we have established the substrate (physical) network. Next, we shall look at how to *map* the virtual nodes of the VNR (Virtual Network Request) onto the substrate network nodes, and how the IP addressing of the virtual hosts is performed. We explored multiple options for mapping virtual nodes onto physical nodes such as encapsulation, VXLAN, VLAN, etc. but ultimately chose to go ahead with the VLAN approach.
+
+
 ## IP addressing of virtual hosts
+Every virtual host is given the next available IP address in the subnet of the 'host layer switch' connected to the host that it is being mapped on. For example, if a virtual host `vnr1_vh1` has to be mapped onto the substrate host `h3` ('10.1.0.0'), then it is given the IP address of '10.1.0.1'. Logically, it means that they all are under the host with IP subnet of '10.1.0 /24', which is basically the subnet of the corresponding '*host layer switch*'. Hence, we are simplifying the process of IP addressing by assigning virtual hosts addresses *as if they belong to the substrate network*. (This saves us the hassle of doing additional mappings and encapsulation, simplying the implementation). 
+This was also the reason to add the additional layer of host switches (i.e. *Modified spine-leaf topology*) so that the host switches can represent every block of substrate network host, and every additional host under it would represent the virtual hosts mapped onto it.
+TODO: Diagram.
 TODO: Explain why we have added an additional layer of host switches (i.e. *Modified spine-leaf topology*. Add draw io diagrams for this.
 
 ## VLAN isolation
 TODO
+
+TODO: where each VNR's hosts belong to a separate VLAN and there is isolation between .
+
 
 ## Traffic control (bandwidth restriction)
 TODO
