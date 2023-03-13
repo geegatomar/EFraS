@@ -87,13 +87,13 @@ Since we want the path taken by any packet from one host to another host to be a
 ### Example
 1. Packet needs to be sent from h1 (10.0.0.0) to h10 (12.0.1.0). The path followed by the packet will be:
     - For **h1 to h10** (request):  h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  s1_3  &rarr;  s2_5  &rarr;  sh10  &rarr;  h10
-    - For **h10 to h1** (reply): h10 &rarr;  sh10  &rarr;  s2_5  &rarr; > s1_3  &rarr;  s2_1  &rarr;  sh1 &rarr;  h1
-    Note that the path followed by packet for request and reply must go through the same set of switches.
+    - For **h10 to h1** (reply): h10 &rarr;  sh10  &rarr;  s2_5  &rarr;  s1_3  &rarr;  s2_1  &rarr;  sh1 &rarr;  h1
+    </br> Note that the path followed by packet for request and reply must go through the same set of switches.
 
 2. Packet needs to be sent from h1 (10.0.0.0) to h2 (10.0.1.0). The path followed by the packet will be:
     - For **h1 to h2** (request):  h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  sh2  &rarr;  h2
     - For **h2 to h1** (reply): h2  &rarr;  sh2  &rarr;  s2_1  &rarr;  sh1  &rarr;  h1
-    Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
+    </br> Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
 
 
 TODO: add diagram
