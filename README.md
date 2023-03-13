@@ -148,15 +148,28 @@ Further implementation details can be found here: https://github.com/geegatomar/
 </br>
 
 ## CPU Restriction
-TODO
+The CPU performance is modeled using CPU control groups (cgroups). We make use of mininet's API for this called **CPULimitedHost** (which internally makes use of cgroups to implement this in Linux).
 
 ---
 
 
 # VNE Algorithm
 
-## Additional data structures maintained
-TODO: Explain the populate_path_between_hosts function here, and why we need to maintain a 'graph' data structure and all.
+The Virtual Network Embedding (VNE) algorithm is the actual logic for selecting the substrate network resources for mapping the Virtual Network Request. This involves mapping of the nodes/hosts and mapping of links onto substrate network's resources.
+
+## Additional data structures
+We maintain additional data structures to model the network/graph, and keep track of the remaining bandwidths between links after VNRs are being mapped. When a virtual link is mapped onto the substrate network's link, the bandwidth of the substrate network is not directly reduced. Instead, this information is tracked using these additional graph data structures (Reason: If you directly reduce the bandwidth of the actual links on the mininet network, then later when you test with iperf, you'd not get the expected bandwidth because you've subtracted from that).
+
+The exact paths (deterministic) between every pair of hosts is initially populated. More information can be found here:
+https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/835fd8e4556d0622054f2b6b4738af64d8e659b4/vne/substrate.py#L195
+
+When the VNE algorithm runs to select set of substrate hosts (for mapping the virtual hosts of the VNR), it needs to check for CPU limits and bandwidth limits, and these data structures which we maintain are useful in doing all these checks.
+
 
 ## Random testing algorithm
+As of now, we have implemented a random testing algorithm as the default VNE algorithm. It randomly does the mapping based on no specific logic (just by going over every host in order and performing the mapping greedily if its possible), but ensures to satisfy all the requirements (bandwidth & CPU) as given by VNR tenant.
+
+---
+
+# Expected Results
 TODO
