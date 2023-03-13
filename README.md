@@ -75,7 +75,7 @@ The only modification in the above diagram is the addition of 'host layer switch
 Since we want the path taken by any packet from one host to another host to be a *deterministic path*, we populate the flow table entries of every switch accordingly.
 
 - For spine layer switches: For every packet that the spine switch gets, it sends it out downwards towards the leaf layer switch depending on the destination IP address of the packet. For example, if (in the above image), the switch s1_2 gets a packet destined for host h11 (having IP address '12.1.0.0'), then it will send the packet to switch s2_6 (having subnet '12.1.0.0/16') because the host h11 comes under the subnet of s2_6.
-- 
+
 - For leaf layer switches: For every packet that the leaf switch gets, there could be 2 situations; either the packet shall travel upwards towards the spine layer switches, or downwards towards the host layer switches. 
     - Towards spine layer switches (upwards): We consider the larger of the src and dst subnets to find the spine layer switch to forward the packet. Reason for doing this (and not just basing the decision off of destination address) is because if we decide the spine layer switch only based on the destination address, then the request & reply packets will not follow the same route. For example, in the topology (sl=3, ll=2, hl=2), if h1 (10.0.0.0) wants to communicate with h6 (11.0.1.0), it will communicate via the switch s1_2 (because dst_ip is under 11 subnet). But when h6 sends reply to h1, then the dst_ip is considered of h1, which is under 10 subnet, and would now route via s1_1. Hence, to avoid this problem, we make the decision of selecting spine switch based on the larger of the two addresses. Hence, in this example packet between h1 (10.0.0.0) and h6 (11.0.1.0) will be travel via the spine switch s1_2 ('11 /8'), and not s1_1 ('10 /8'), because 11 > 10.
     - Towards host layer switches (downwards): This is a simple decision based on the destination address of the host, the packet is output on the respective output port of leaf switch accordingly. For example, if the spine switch s2_1 gets a packet for host h2 (10.0.1.0), it will send it out to the host switch sh2 (10.0.1/24).
@@ -86,14 +86,14 @@ Since we want the path taken by any packet from one host to another host to be a
 
 ### Example
 1. Packet needs to be sent from h1 (10.0.0.0) to h10 (12.0.1.0). The path followed by the packet will be:
-- For **h1 to h10** (request):  h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  s1_3  &rarr;  s2_5  &rarr;  sh10  &rarr;  h10
-- For **h10 to h1** (reply): h10 &rarr;  sh10  &rarr;  s2_5  &rarr; > s1_3  &rarr;  s2_1  &rarr;  sh1 &rarr;  h1
-- Note that the path followed by packet for request and reply must go through the same set of switches.
+    - For **h1 to h10** (request):  h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  s1_3  &rarr;  s2_5  &rarr;  sh10  &rarr;  h10
+    - For **h10 to h1** (reply): h10 &rarr;  sh10  &rarr;  s2_5  &rarr; > s1_3  &rarr;  s2_1  &rarr;  sh1 &rarr;  h1
+    Note that the path followed by packet for request and reply must go through the same set of switches.
 
 2. Packet needs to be sent from h1 (10.0.0.0) to h2 (10.0.1.0). The path followed by the packet will be:
-- For **h1 to h2** (request):  h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  sh2  &rarr;  h2
-- For **h2 to h1** (reply): h2  &rarr;  sh2  &rarr;  s2_1  &rarr;  sh1  &rarr;  h1
-Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
+    - For **h1 to h2** (request):  h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  sh2  &rarr;  h2
+    - For **h2 to h1** (reply): h2  &rarr;  sh2  &rarr;  s2_1  &rarr;  sh1  &rarr;  h1
+    Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
 
 
 TODO: add diagram
