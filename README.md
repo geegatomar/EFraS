@@ -6,12 +6,18 @@
 - Install [RYU controller](https://ryu.readthedocs.io/en/latest/getting_started.html)
 - Instructions to run:
     - Clone the repo </br>
-        ```git clone https://github.com/geegatomar/Official-VNE-SDN-Major-Project.git```
+        ```
+        $ git clone https://github.com/geegatomar/Official-VNE-SDN-Major-Project.git
+        ```
     - Move/copy the ryu controller file `ryu_controller_vne.py` to the location where you installed RYU, into the directory `ryu/app/`
     - Start the ryu controller </br>
-      ``` ryu-manager ryu/app/ryu_controller_vne.py ```
+        ``` 
+        $ ryu-manager ryu/app/ryu_controller_vne.py 
+        ```
     - Run the mininet code </br>
-      ` sudo python3 vne/main.py `
+        ``` 
+        $ sudo python3 vne/main.py 
+        ```
   
 
 ## Overview
@@ -150,6 +156,8 @@ Further implementation details can be found here: https://github.com/geegatomar/
 ## CPU Restriction
 The CPU performance is modeled using CPU control groups (cgroups). We make use of mininet's API for this called **CPULimitedHost** (which internally makes use of cgroups to implement this in Linux).
 
+</br>
+
 ---
 
 
@@ -165,6 +173,7 @@ https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/835fd8e4556d06
 
 When the VNE algorithm runs to select set of substrate hosts (for mapping the virtual hosts of the VNR), it needs to check for CPU limits and bandwidth limits, and these data structures which we maintain are useful in doing all these checks.
 
+</br>
 
 ## Random testing algorithm
 As of now, we have implemented a random testing algorithm as the default VNE algorithm. It randomly does the mapping based on no specific logic (just by going over every host in order and performing the mapping greedily if its possible), but ensures to satisfy all the requirements (bandwidth & CPU) as given by VNR tenant.
