@@ -73,8 +73,8 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
         vnr_mapping.map_vnr_on_substrate_network(
             net, cpu_reqs_for_vnr_mapping, bw_reqs_for_vnr_mapping)
         num_vnrs_mapped += 1
-    print(gbl.bcolors.OKCYAN + "Successfully mapped {} / {} Virtual Network Requests using the {} algorithm!".format(
-        num_vnrs_mapped, total_num_vnrs, "random testing") + gbl.bcolors.ENDC)
+    print("\n", gbl.bcolors.OKCYAN + "Successfully mapped {} / {} Virtual Network Requests using the {} algorithm!".format(
+        num_vnrs_mapped, total_num_vnrs, "random testing") + gbl.bcolors.ENDC, "\n")
 
     hp.update_cpu_limits_of_substrate_hosts_after_vnr_mapping(net)
 
@@ -91,4 +91,4 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
 
 if __name__ == '__main__':
     setLogLevel('info')
-    runVNE(sl_factor=3, ll_factor=3, hl_factor=2)
+    runVNE(sl_factor=4, ll_factor=3, hl_factor=2)
