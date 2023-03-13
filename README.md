@@ -132,13 +132,19 @@ Note that the IP addressing of these virtual hosts is done as per the logic expl
 
 ## VLAN Isolation
 Once the IP addressing of virtual hosts was figured out, the connectivity amongst every pair of host (all substrate and virtual hosts) is inherently present because of how the flow table entries were initially populated. This meant that a host of one VNR is able to communicate with a host of another VNR; and this behavior is undesirable. This is why we added VLAN logic to provide isolation between VNRs, i.e. hosts of one VNR shall be able to communicate with each other, but not communicate with any other host on the network. 
-For implementing this, VLAN IDs have been used (where every VNR is given a new VLAN ID), and additional entries were added to the flow tables of the switches to confirm isolation between different VLANs.
+
+Virtual LAN (VLAN) is used to logically partition a network. For implementing this, VLAN IDs have been used (where every VNR is given a new VLAN ID), and additional entries were added to the flow tables of the switches to confirm isolation between different VLANs.
+Further implementation details can be found here: https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/00400218b6b6a36851f6ec02ecd18bf090155340/vne/vnr_mapping.py#L122
 
 
-## Traffic Control (bandwidth restriction)
-TODO
+## Bandwidth Restriction
+The bandwidth for every link in the network has a limit as defined by the substrate network links. When mapping a VNR's virtual links onto the substrate network links, the bandwidth for that link must be restricted to the requirement it had specified, and this is implemented using **traffic control**, by making use of ***HTB*** (Hierarchical Token Bucket) filtering qdiscs.
 
-## CPU restriction
+Traffic control filtering rules are attached based on the destination IP address of the packets, to decide which class of the qdisc that traffic belongs to. 
+Further implementation details can be found here: https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/00400218b6b6a36851f6ec02ecd18bf090155340/vne/vnr_mapping.py#L139
+
+
+## CPU Restriction
 TODO
 
 ---
