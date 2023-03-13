@@ -90,12 +90,12 @@ Since we want the path taken by any packet from one host to another host to be a
     - For **h10 to h1** (reply): h10 &rarr;  sh10  &rarr;  s2_5  &rarr;  s1_3  &rarr;  s2_1  &rarr;  sh1 &rarr;  h1
     </br> Note that the path followed by packet for request and reply must go through the same set of switches.
 
-2. Packet needs to be sent from h1 (10.0.0.0) to h2 (10.0.1.0). The path followed by the packet will be:
-    - For **h1 to h2** (request):  h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  sh2  &rarr;  h2
-    - For **h2 to h1** (reply): h2  &rarr;  sh2  &rarr;  s2_1  &rarr;  sh1  &rarr;  h1
+2. Packet needs to be sent from h1 (11.0.0.0) to h2 (11.0.1.0). The path followed by the packet will be:
+    - For **h5 to h6** (request):  h5  &rarr;  sh5  &rarr;  s2_3  &rarr;  sh6  &rarr;  h6
+    - For **h6 to h5** (reply): h6  &rarr;  sh6  &rarr;  s2_3  &rarr;  sh5  &rarr;  h5
     </br> Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
 
-TODO: add diagram
+![flow-table-example-diagram](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/flow_table_example.png?raw=true)
 
 ---
 
