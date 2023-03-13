@@ -1,7 +1,7 @@
 # Virtual Network Embedding (VNE) emulation using mininet
 
 
-## Getting started
+## Getting Started
 - Install [Mininet](http://mininet.org/download/)
 - Install [RYU controller](https://ryu.readthedocs.io/en/latest/getting_started.html)
 - Instructions to run:
@@ -24,7 +24,7 @@ This project uses mininet to emulate a network topology for the Virtual Network 
 To run the code; there is one mininet (.py) file which needs to be run with mininet. The other simple ryu controller file must be running to ensure that the ryu controller is up and running on port 6553.
 
 
-## Project modules
+## Project Modules
 The project work is broadly divided into the following parts:
 ### Substrate topology generation
 1. Spine leaf topology creation
@@ -40,7 +40,7 @@ The project work is broadly divided into the following parts:
 
 ---
 
-# Substrate network
+# Substrate Network
 
 ## Spine-Leaf Topology
 Spine-Leaf Architecture is a two-layer, full-mesh topology composed of a leaf layer and a spine layer, with the leaf and spine switches. </br>
@@ -86,15 +86,15 @@ Since we want the path taken by any packet from one host to another host to be a
 
 ### Example
 1. Packet needs to be sent from h1 (10.0.0.0) to h10 (12.0.1.0). The path followed by the packet will be:
-    - For **h1 to h10** (request):  h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  s1_3  &rarr;  s2_5  &rarr;  sh10  &rarr;  h10
-    - For **h10 to h1** (reply): h10 &rarr;  sh10  &rarr;  s2_5  &rarr;  s1_3  &rarr;  s2_1  &rarr;  sh1 &rarr;  h1
+    - For **h1 to h10** (request): &nbsp; h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  s1_3  &rarr;  s2_5  &rarr;  sh10  &rarr;  h10
+    - For **h10 to h1** (reply): &nbsp; &nbsp; h10 &rarr;  sh10  &rarr;  s2_5  &rarr;  s1_3  &rarr;  s2_1  &rarr;  sh1 &rarr;  h1
     </br> Note that the path followed by packet for request and reply must go through the same set of switches.
 
 2. Packet needs to be sent from h1 (11.0.0.0) to h2 (11.0.1.0). The path followed by the packet will be:
-    - For **h5 to h6** (request):  h5  &rarr;  sh5  &rarr;  s2_3  &rarr;  sh6  &rarr;  h6
-    - For **h6 to h5** (reply): h6  &rarr;  sh6  &rarr;  s2_3  &rarr;  sh5  &rarr;  h5
+    - For **h5 to h6** (request): &nbsp; h5  &rarr;  sh5  &rarr;  s2_3  &rarr;  sh6  &rarr;  h6
+    - For **h6 to h5** (reply): &nbsp; &nbsp; h6  &rarr;  sh6  &rarr;  s2_3  &rarr;  sh5  &rarr;  h5
     </br> Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
-
+</br>
 ![flow-table-example-diagram](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/flow_table_example.png?raw=true)
 
 ---
