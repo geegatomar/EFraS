@@ -14,7 +14,7 @@
         ``` 
         $ ryu-manager ryu/app/ryu_controller_vne.py 
         ```
-    - Run the mininet code (in another terminal) </br>
+    - Run the mininet code  </br>
         ``` 
         $ sudo python3 vne/main.py 
         ```
