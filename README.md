@@ -4,11 +4,12 @@
 ## Getting Started
 - Install [Mininet](http://mininet.org/download/)
 - Install [RYU controller](https://ryu.readthedocs.io/en/latest/getting_started.html)
-- Install dependency packages
-        ```
-        sudo pip install networkx
-        ```
-- Instructions to run:
+- Install dependency packages </br>
+     ```
+     $ sudo pip install networkx
+     ```
+
+- **Instructions to run**:
     - Clone the repo </br>
         ```
         $ git clone https://github.com/geegatomar/Official-VNE-SDN-Major-Project.git
