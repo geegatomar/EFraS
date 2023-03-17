@@ -4,6 +4,10 @@
 ## Getting Started
 - Install [Mininet](http://mininet.org/download/)
 - Install [RYU controller](https://ryu.readthedocs.io/en/latest/getting_started.html)
+- Install dependency packages
+        ```
+        sudo pip install networkx
+        ```
 - Instructions to run:
     - Clone the repo </br>
         ```
