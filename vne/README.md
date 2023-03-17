@@ -5,9 +5,8 @@
  The main executable in the package.
  
  ## configurations.json
- User specified *configurations* are specified here. These configurations decide
- the number of nodes in substrate graph, number of VNRs, the cpu/bw requirements
- of those generated VNRs, etc.
+ User can specify all *configurations* here. These configurations decide the number of nodes in substrate graph, number of VNRs, the cpu/bw requirements
+ of those generated VNRs will be in which range of randomly generated values (i.e. min and max values for range), etc.
  
 
  ## substrate.py
