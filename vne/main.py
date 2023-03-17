@@ -13,7 +13,7 @@ import substrate
 import vnr_mapping
 import tests
 import vne_algorithms
-
+import json
 
 # Note that all examples for the variables/data structures below are for the topology
 # when sl_factor = 3, ll_factor = 2, hl_factor = 2.
@@ -50,13 +50,17 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
     # Populating flow entries for substrate network.
     substrate.add_flow_entries_for_substrate_network(net)
 
-    # Creating input VNRs. This can be generated randomly using code also.
-    inputs_for_vnr_mapping_algo = [
-        (4, [45, 10, 5, 15], [(1, 2, 5), (2, 3, 3), (2, 4, 6), (3, 4, 7)]),
-        (4, [25, 30, 15, 45], [(1, 2, 5), (2, 3, 3), (2, 4, 6), (3, 4, 7)]),
-        (4, [15, 20, 65, 25], [(1, 2, 5), (2, 3, 3), (2, 4, 6), (3, 4, 5)]),
-        (4, [35, 40, 25, 15], [(1, 2, 2), (2, 3, 5), (2, 4, 4), (3, 4, 6)])
-    ]
+    # Creating input VNRs.
+    cfg_vnrs = gbl.CFG["vnrs"]
+    inputs_for_vnr_mapping_algo = hp.create_vnrs(
+        num_vnrs=cfg_vnrs["num_vnrs"],
+        min_nodes=cfg_vnrs["min_nodes"],
+        max_nodes=cfg_vnrs["max_nodes"],
+        probability=cfg_vnrs["probability"],
+        min_cpu=cfg_vnrs["min_cpu"],
+        max_cpu=cfg_vnrs["max_cpu"],
+        min_bw=cfg_vnrs["min_bw"],
+        max_bw=cfg_vnrs["max_bw"])
 
     total_num_vnrs = len(inputs_for_vnr_mapping_algo)
     num_vnrs_mapped = 0
@@ -74,7 +78,7 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
             net, cpu_reqs_for_vnr_mapping, bw_reqs_for_vnr_mapping)
         num_vnrs_mapped += 1
     print("\n", gbl.bcolors.OKCYAN + "Successfully mapped {} / {} Virtual Network Requests using the {} algorithm!".format(
-        num_vnrs_mapped, total_num_vnrs, "random testing") + gbl.bcolors.ENDC, "\n")
+        num_vnrs_mapped, total_num_vnrs, gbl.CFG["vne_algorithm"]) + gbl.bcolors.ENDC, "\n")
 
     hp.update_cpu_limits_of_substrate_hosts_after_vnr_mapping(net)
 
@@ -89,6 +93,17 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
     net.stop()
 
 
+def main():
+    f = open('configurations.json')
+    gbl.CFG = json.load(f)
+    f.close()
+
+    cfg_s = gbl.CFG["substrate"]
+
+    runVNE(sl_factor=cfg_s["sl_factor"],
+           ll_factor=cfg_s["ll_factor"], hl_factor=cfg_s["hl_factor"])
+
+
 if __name__ == '__main__':
     setLogLevel('info')
-    runVNE(sl_factor=3, ll_factor=3, hl_factor=2)
+    main()

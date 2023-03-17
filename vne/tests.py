@@ -36,9 +36,13 @@ def test_iperf_bandwidth_within_vnr_vhosts(net):
             vh1 = vnr.hostname_x_vh[h1_name]
             vh2 = vnr.hostname_x_vh[h2_name]
             iperf_result = net.iperf(hosts=[net[vh1.name], net[vh2.name]])
+            # We are mainly interested in verifying the lower limit, i.e. iperf_result[0]
+            # because we have to ensure its sufficient as per the expected bandwidth.
             # Iperf uses the unit `Mbits`, whereas traffic control commands use the unit `mbits`.
             # The conversion factor is 1 Mbit = 1.024 * 1.024 mbit.
             bw_obtained = float(iperf_result[0].split(" ")[0]) * 1.024 * 1.024
+            if iperf_result[0].split(" ")[1] == "Kbits/sec":
+                bw_obtained = (bw_obtained / 1000) * 1.024
             # Computing MAPE (mean absolute percentage error).
             mean_absolute_percentage_error = np.mean(
                 np.abs((bw_expected - bw_obtained)/bw_expected))*100

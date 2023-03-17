@@ -1,0 +1,34 @@
+{
+    "substrate": {
+
+        "sl_factor": 3,
+        "ll_factor": 4,
+        "hl_factor": 4,
+
+        "cpu_limit_min": 140,
+        "cpu_limit_max": 200,
+
+        "spine_to_leaf_links": {
+            "bw_limit_min": 70,
+            "bw_limit_max": 80
+        },
+
+        "leaf_to_host_links": {
+            "bw_limit_min": 30,
+            "bw_limit_max": 40
+        }
+    },
+
+    "vnrs": {
+        "num_vnrs": 7, 
+        "min_nodes": 3, 
+        "max_nodes": 8, 
+        "probability": 0.3, 
+        "min_cpu": 10, 
+        "max_cpu": 40, 
+        "min_bw": 1, 
+        "max_bw": 5
+    },
+
+    "vne_algorithm" : "random-testing-algorithm"
+}

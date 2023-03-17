@@ -1,6 +1,8 @@
 import gbl
 from mininet.cli import CLI
 from substrate import SubstrateHost
+import networkx as nx
+import random
 
 
 def get_output_port_for_spine_switches(dst_16_bit_subnet):
@@ -102,3 +104,27 @@ def update_cpu_limits_of_substrate_hosts_after_vnr_mapping(net):
         net[host.name].setCPUFrac(f=cpu_f_host, sched='cfs')
         print("\nUpdated the cpu limit of {} to {}%, i.e. {} units.".format(
             host.name, f'{cpu_f_host:.4f}', host.cpu_limit))
+
+
+def create_vnrs(num_vnrs=5, min_nodes=2, max_nodes=6, probability=0.4, min_cpu=10, max_cpu=50, min_bw=1, max_bw=5):
+    # Note: If you want a connected graph, do not give a probability of less than 0.1.
+    vnrs = []
+    print("Creating VNRs...")
+    for req in range(num_vnrs):
+        num_nodes = random.randint(min_nodes, max_nodes)
+        g = nx.erdos_renyi_graph(
+            num_nodes, probability, seed=123, directed=False)
+
+        # Generating random values for CPU values and link bandwidths specified in given ranges.
+        cpu_reqs = []
+        link_reqs = []
+        for _ in g.nodes():
+            cpu_req = random.randint(min_cpu, max_cpu)
+            cpu_reqs.append(cpu_req)
+        for edge in g.edges():
+            bw_req = random.randint(min_bw, max_bw)
+            link_reqs.append((edge[0]+1, edge[1]+1, bw_req))
+
+        vnrs.append((num_nodes, cpu_reqs, link_reqs))
+        print("VNR {}: {}".format(req, (num_nodes, cpu_reqs, link_reqs)))
+    return vnrs

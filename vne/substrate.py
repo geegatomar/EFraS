@@ -73,8 +73,9 @@ def generate_topology(sl_factor, ll_factor, hl_factor):
                 host_name = "h{}".format(
                     hl_factor*ll_factor*i + hl_factor*j + k + 1)
 
-                # Randomly generating cpu limits for substrate host in range 40-200
-                cpu_limit = random.randrange(4, 20) * 10
+                # Randomly generating cpu limits for substrate host in given range
+                cpu_limit = random.randrange(
+                    gbl.CFG["substrate"]["cpu_limit_min"], gbl.CFG["substrate"]["cpu_limit_max"])
                 host = SubstrateHost(
                     host_name, host_layer_subnet + ".0/24", cpu_limit)
                 SubstrateHost.cpu_all_hosts += cpu_limit
@@ -116,7 +117,8 @@ class SpineLeafSubstrateNetwork(Topo):
         # Everytime link is added, update the next_port_addr for the switch.
         for spine_switch in gbl.SPINE_SWITCHES:
             for leaf_switch in gbl.LEAF_SWITCHES:
-                bw_random = random.randrange(29, 40)
+                bw_random = random.randrange(gbl.CFG["substrate"]["spine_to_leaf_links"]
+                                             ["bw_limit_min"], gbl.CFG["substrate"]["spine_to_leaf_links"]["bw_limit_max"])
                 self.addLink(spine_switch.name,
                              leaf_switch.name, cls=TCLink, bw=bw_random)
                 gbl.BW_SWITCH_PAIR[(spine_switch, leaf_switch)] = bw_random
@@ -130,7 +132,8 @@ class SpineLeafSubstrateNetwork(Topo):
         for leaf_switch in gbl.LEAF_SWITCHES:
             for i in range(gbl.NUM_HOSTS_PER_LEAF_SWITCH):
                 host_switch = gbl.HOST_SWITCHES[host_index]
-                bw_random = random.randrange(19, 30)
+                bw_random = random.randrange(gbl.CFG["substrate"]["leaf_to_host_links"]
+                                             ["bw_limit_min"], gbl.CFG["substrate"]["leaf_to_host_links"]["bw_limit_max"])
                 self.addLink(host_switch.name, leaf_switch.name,
                              cls=TCLink, bw=bw_random)
                 gbl.BW_SWITCH_PAIR[(host_switch, leaf_switch)] = bw_random

@@ -67,3 +67,6 @@ BW_SWITCH_PAIR = {}
 # List of MappedVNR objects. Consists of information of all the Virtual Network Requests that
 # have been mapped and served in the topology network.
 MAPPED_VNRS = []
+
+# The user configurable values obtained from `configurations.json` file populate this variable.
+CFG = None

@@ -195,3 +195,18 @@ def random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
 
 
 #################################################################################
+
+def vne_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
+    """ This function selects the VNE (Virtual Network Embedding) algorithm to
+    use based on the specifications in the configuration files.
+
+    num_hosts: Number of hosts as provided by tenants requirement for the VNR. 
+        Example: 4
+    cpu_reqs: The CPU requirement values of every host in the VNR.
+        Example: [20, 10, 5, 15]
+    link_bw_reqs: The links as specified in the VNR, along with the expected bandwidth
+        between the hosts. List of Tuple(host, host, bandwidth req)
+        Example: [(1, 2, 5), (2, 3, 3), (2, 4, 6), (3, 4, 8)]
+    """
+    if gbl.CFG["vne_algorithm"] == "random-testing-algorithm":
+        random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs)

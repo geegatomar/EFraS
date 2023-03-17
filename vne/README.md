@@ -4,6 +4,12 @@
  ## main.py
  The main executable in the package.
  
+ ## configurations.json
+ User specified *configurations* are specified here. These configurations decide
+ the number of nodes in substrate graph, number of VNRs, the cpu/bw requirements
+ of those generated VNRs, etc.
+ 
+
  ## substrate.py
  Substrate module consists of methods concerning creation of the substrate (physical) network.
   - The construction of the spine-leaf topology in mininet
