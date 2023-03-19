@@ -7,6 +7,7 @@
 - Install dependency packages </br>
      ```
      $ sudo pip install networkx
+     $ sudo apt-get install python3-openpyxl
      ```
 
 - **Instructions to run**:

@@ -109,7 +109,7 @@ def update_cpu_limits_of_substrate_hosts_after_vnr_mapping(net):
 def create_vnrs(num_vnrs=5, min_nodes=2, max_nodes=6, probability=0.4, min_cpu=10, max_cpu=50, min_bw=1, max_bw=5):
     # Note: If you want a connected graph, do not give a probability of less than 0.1.
     vnrs = []
-    print("Creating VNRs...")
+    print("\nCreating VNRs...")
     for req in range(num_vnrs):
         num_nodes = random.randint(min_nodes, max_nodes)
         g = nx.erdos_renyi_graph(

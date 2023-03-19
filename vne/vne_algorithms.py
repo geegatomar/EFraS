@@ -1,4 +1,7 @@
 import gbl
+import helpers as hp
+import copy
+import output as op
 
 
 def _get_bandwidth_limit_between_host_pair(host_pair):
@@ -57,18 +60,42 @@ def _add_link_mapping_between_hosts(host_pair, bw_req, COPY_BW_SWITCH_PAIR):
     # When adding a link mapping between substrate hosts, the bw provided to the
     # link between these hosts must be subtracted from all the links in the path
     # between these hosts.
+    bw_cost_spent_on_substrate = 0
     (h1, h2) = host_pair
     if int(h1.name[1:]) > int(h2.name[1:]):
         host_pair = (h2, h1)
 
     path = gbl.PATH_BETWEEN_HOSTS[host_pair]
     for each_link in path:
-        if COPY_BW_SWITCH_PAIR.get(each_link):
-            COPY_BW_SWITCH_PAIR[each_link] -= bw_req
-            # Update bothways bw, since we are storing that twice.
-            (node1, node2) = each_link
-            other_way_link = (node2, node1)
-            COPY_BW_SWITCH_PAIR[other_way_link] -= bw_req
+        (node1, node2) = each_link
+        # Note: Remember that the spine leaf achitecture we have in our project is
+        # implemented as a 'modified spine leaf' architecture, and so there is an
+        # additional layer of links in the last layer. But when we compute the 'cost'
+        # for bandwidth spent, we don't count that last 'modified' layer's links
+        # because that layer is mainly for implementation purposes, and logically its
+        # still a spine-leaf architecture.
+        for ((p1, p2), _) in COPY_BW_SWITCH_PAIR.items():
+            if (p1.name == node1.name and p2.name == node2.name):
+                COPY_BW_SWITCH_PAIR[(p1, p2)] -= bw_req
+                COPY_BW_SWITCH_PAIR[(p2, p1)] -= bw_req
+                bw_cost_spent_on_substrate += bw_req
+
+    return COPY_BW_SWITCH_PAIR, bw_cost_spent_on_substrate
+
+
+def _update_bw_switch_pair_values(new_bw_switch_pair):
+    for ((node1, node2), old_val) in gbl.BW_SWITCH_PAIR.items():
+        for ((p1, p2), new_val) in new_bw_switch_pair.items():
+            if node1.name == p1.name and node2.name == p2.name:
+                gbl.BW_SWITCH_PAIR[(node1, node2)] = new_val
+                # If this link value was changed, it means that this link was utilized
+                # in the vnr mapping.
+                if new_val != old_val:
+                    op.SUBSTRATE_LINKS_USED.add((node1.name, node2.name))
+            if node2.name == p1.name and node1.name == p2.name:
+                gbl.BW_SWITCH_PAIR[(node2, node1)] = new_val
+                if new_val != old_val:
+                    op.SUBSTRATE_LINKS_USED.add((node2.name, node1.name))
 
 
 # Currently, I'm implementing a random algorithm, which randomly does the mapping based
@@ -103,7 +130,7 @@ def random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
 
     # Making a copy of this gbl.BW_SWITCH_PAIR, since we will update it at intermediate stages to
     # try out if a mapping works or not. If it doesn't work, discard that.
-    COPY_BW_SWITCH_PAIR = gbl.BW_SWITCH_PAIR
+    COPY_BW_SWITCH_PAIR = copy.deepcopy(gbl.BW_SWITCH_PAIR)
 
     # For every host, obtaining what all links it needs to have with other hosts, and their bws
     hostpair_x_bw = {}
@@ -114,6 +141,13 @@ def random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
 
     # Maintain mapped hosts, and onto which substrate hosts they were mapped.
     mapped_host_x_substrate_host = {}
+
+    # Tracking 'cost' and 'revenue' with respect to bandwidth for output results.
+    total_bw_cost_spent_on_substrate = 0
+    total_bw_requested = 0
+    total_cpu_reqs = 0
+
+    substrate_hosts_used_for_mapping_vnr_hosts = []
 
     # Going over every host to try a mapping (as per this random algorithm).
     for h in range(1, num_hosts + 1):
@@ -147,8 +181,10 @@ def random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
                         # mapping of this host is possible, else just remove this host mapping,
                         # and try another.
                         if bw_req <= _get_bandwidth_limit_between_host_pair((H1, H2)):
-                            _add_link_mapping_between_hosts(
+                            COPY_BW_SWITCH_PAIR, bw_cost_spent_on_substrate = _add_link_mapping_between_hosts(
                                 (H1, H2), bw_req, COPY_BW_SWITCH_PAIR)
+                            total_bw_cost_spent_on_substrate += bw_cost_spent_on_substrate
+                            total_bw_requested += bw_req
                         else:
                             host_mapped_successfully = False
                             break
@@ -159,6 +195,8 @@ def random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
                         h, substrate_host.name))
                     del mapped_host_x_substrate_host[h]
                 else:
+                    substrate_hosts_used_for_mapping_vnr_hosts.append(
+                        substrate_host.name)
                     print("Host {} mapped on substrate host {}!".format(
                         h, substrate_host.name))
             # If the substrate host for mapping this host has been found, then break out
@@ -176,7 +214,22 @@ def random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
     # If we have reached till here, means that mappings were found for every host
     # and we have successfully been able to serve this VNR. Hence update the
     # gbl.BW_SWITCH_PAIR with updated reduced bandwidths.
-    gbl.BW_SWITCH_PAIR = COPY_BW_SWITCH_PAIR
+    # Since we don't want address of the deep copied objects, we need to update the original
+    # BW_SWITCH_PAIR values itself.
+    _update_bw_switch_pair_values(COPY_BW_SWITCH_PAIR)
+    # Updating the 'cost' and 'revenue' with respect to bandwidth.
+    op.output_dict["total_cost"] += total_bw_cost_spent_on_substrate
+    op.output_dict["revenue"] += total_bw_requested
+
+    # If all hosts of vnr were mapped, then total cost of cpu can be computed
+    for h in range(1, num_hosts + 1):
+        total_cpu_reqs += cpu_reqs[h - 1]
+    print("\ntotal_cpu_reqs: ", total_cpu_reqs, "\n")
+    op.output_dict["total_cost"] += total_cpu_reqs
+    op.output_dict["revenue"] += total_cpu_reqs
+
+    for sh in substrate_hosts_used_for_mapping_vnr_hosts:
+        op.SUBSTRATE_HOSTS_USED.add(sh)
 
     print(gbl.bcolors.OKGREEN +
           "\nMAPPING SUCCESSFUL FOR THIS VNR!" + gbl.bcolors.ENDC)
@@ -190,6 +243,11 @@ def random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
         H1 = mapped_host_x_substrate_host[h1]
         H2 = mapped_host_x_substrate_host[h2]
         bw_reqs_for_vnr_mapping.append((H1.name, H2.name, bw))
+
+    print("\n===============================================================")
+    print("op.SUBSTRATE_HOSTS_USED: ", op.SUBSTRATE_HOSTS_USED)
+    print("op.SUBSTRATE_LINKS_USED: ", op.SUBSTRATE_LINKS_USED)
+    print("===============================================================\n")
 
     return (cpu_reqs_for_vnr_mapping, bw_reqs_for_vnr_mapping)
 
@@ -209,4 +267,4 @@ def vne_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
         Example: [(1, 2, 5), (2, 3, 3), (2, 4, 6), (3, 4, 8)]
     """
     if gbl.CFG["vne_algorithm"] == "random-testing-algorithm":
-        random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs)
+        return random_mapping_algorithm(num_hosts, cpu_reqs, link_bw_reqs)

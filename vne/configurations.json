@@ -26,8 +26,8 @@
         "probability": 0.3, 
         "min_cpu": 10, 
         "max_cpu": 30, 
-        "min_bw": 1, 
-        "max_bw": 5
+        "min_bw": 4, 
+        "max_bw": 8
     },
 
     "vne_algorithm" : "random-testing-algorithm"

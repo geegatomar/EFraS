@@ -5,6 +5,7 @@ from mininet.topo import Topo
 from mininet.link import TCLink
 import helpers as hp
 from mininet.cli import CLI
+import output as op
 
 
 class SubstrateHost(Host):
@@ -80,6 +81,9 @@ def generate_topology(sl_factor, ll_factor, hl_factor):
                     host_name, host_layer_subnet + ".0/24", cpu_limit)
                 SubstrateHost.cpu_all_hosts += cpu_limit
 
+                op.output_dict["pre_resource"] += cpu_limit
+                op.output_dict["total_nodes"] += 1
+
                 host_switch = Switch("sh{}".format(
                     hl_factor*ll_factor*i + hl_factor*j + k + 1), host_layer_subnet)
                 gbl.HOSTS.append(host)
@@ -125,6 +129,8 @@ class SpineLeafSubstrateNetwork(Topo):
                 gbl.BW_SWITCH_PAIR[(leaf_switch, spine_switch)] = bw_random
                 spine_switch.next_port_number += 1
                 leaf_switch.next_port_number += 1
+                op.output_dict["pre_resource"] += bw_random
+                op.output_dict["total_links"] += 1
 
         # Add links between leaf layer switches and host switches.
         # Everytime link is added, update the next_port_addr for the switch.
@@ -141,11 +147,19 @@ class SpineLeafSubstrateNetwork(Topo):
                 host_index += 1
                 leaf_switch.next_port_number += 1
                 host_switch.next_port_number += 1
+                op.output_dict["pre_resource"] += bw_random
+                op.output_dict["total_links"] += 1
 
         # Add link between the host switches and the hosts.
         for (host_switch, host) in zip(gbl.HOST_SWITCHES, gbl.HOSTS):
             self.addLink(host_switch.name, host.name)
             host_switch.next_port_number += 1
+            # Note that we do NOT count this as a link in the total_links because
+            # this link is mainly used for implementation purposes which is the reason
+            # for a 'modified spine leaf' architecture. But, since we are counting the
+            # total links in the spine leaf topology, we only count the links between
+            # spine-leaf and leaf-host, which has already been done above.
+            op.output_dict["total_links"] += 0
 
 
 def add_flow_entries_for_substrate_network(net):
