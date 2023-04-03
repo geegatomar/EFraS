@@ -182,8 +182,11 @@ When the VNE algorithm runs to select set of substrate hosts (for mapping the vi
 
 </br>
 
-## Random testing algorithm
-As of now, we have implemented a random testing algorithm as the default VNE algorithm. It randomly does the mapping based on no specific logic (just by going over every host in order and performing the mapping greedily if its possible), but ensures to satisfy all the requirements (bandwidth & CPU) as given by VNR tenant.
+## First fit algorithm
+As of now, we have implemented a simple first fit algorithm as the default VNE algorithm. It does the mapping just by going over every host in order and performing the mapping greedily if its possible, and ensures to satisfy all the requirements (bandwidth & CPU) as given by VNR tenant.
+
+## Worst fit algorithm
+In the worst fit algorithm, it does the mapping just by going over every host in decreasing order of their cpu capacity limits and performing the mapping greedily if its possible, and ensures to satisfy all the requirements (bandwidth & CPU) as given by VNR tenant.
 
 ---
 
