@@ -78,10 +78,16 @@ def add_row_to_excel(op):
 def compute_remaining_output_parameters():
     # Some of the parameters of `output_dict` are directly populated from code.
     # And others such as 'ratios' are computed here.
-    output_dict["embeddingratio"] = output_dict["accepted"] / \
-        output_dict["total_request"]
-    output_dict["revenuetocostratio"] = output_dict["revenue"] / \
-        output_dict["total_cost"]
+    try:
+        output_dict["embeddingratio"] = output_dict["accepted"] / \
+            output_dict["total_request"]
+    except:
+        output_dict["embeddingratio"] = None
+    try:
+        output_dict["revenuetocostratio"] = output_dict["revenue"] / \
+            output_dict["total_cost"]
+    except:
+        output_dict["revenuetocostratio"] = None
     output_dict["consumed"] = output_dict["total_cost"]
     output_dict["post_resource"] = output_dict["pre_resource"] - \
         output_dict["consumed"]

@@ -20,15 +20,16 @@
     },
 
     "vnrs": {
-        "num_vnrs": 7, 
-        "min_nodes": 3, 
+        "num_vnrs": 10, 
+        "min_nodes": 4, 
         "max_nodes": 8, 
         "probability": 0.3, 
-        "min_cpu": 10, 
-        "max_cpu": 30, 
+        "min_cpu": 10,
+        "max_cpu": 15, 
         "min_bw": 4, 
         "max_bw": 8
     },
 
-    "vne_algorithm" : "random-testing-algorithm"
+    "vne_algorithm" : "first-fit-algorithm",
+    "x_vne_algorithm": "worst-fit-algorithm"
 }
