@@ -1,4 +1,7 @@
 import pandas as pd
+import gbl
+import datetime
+from zoneinfo import ZoneInfo
 
 output_dict = {
     "algorithm": None,
@@ -100,3 +103,11 @@ def compute_remaining_output_parameters():
     add_row_to_excel(output_dict)
     excel = pd.DataFrame(OUTPUT_RESULTS)
     excel.to_excel("Results.xlsx")
+
+    num_vnrs = gbl.CFG["vnrs"]["num_vnrs"]
+    vne_algo = gbl.CFG["vne_algorithm"]
+    ft = "%Y-%m-%dT%H:%M:%S%z"
+    time_now = datetime.datetime.now(tz=ZoneInfo('Asia/Kolkata')).strftime(ft)
+
+    excel.to_excel("Results_seed5_{}_{}_{}.xlsx".format(
+        vne_algo, num_vnrs, time_now))

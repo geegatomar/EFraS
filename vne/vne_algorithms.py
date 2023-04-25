@@ -31,9 +31,7 @@ def _get_bandwidth_limit_between_host_pair(host_pair, COPY_BW_SWITCH_PAIR):
         # Update the bandwidth limit to be mininum of all links' bandwidths in the path.
         # Note that we haven't restricted bandwidths between the last layer of host to
         # host switch pair, hence those values will not exist in gbl.BW_SWITCH_PAIR.
-        if gbl.BW_SWITCH_PAIR.get(each_link):
-            # bw_limit = min(bw_limit, COPY_BW_SWITCH_PAIR[each_link])
-            # bw_limits.append(COPY_BW_SWITCH_PAIR[each_link])
+        if each_link in gbl.BW_SWITCH_PAIR.keys():
 
             # Find that switch pair in the COPY_BW_SWITCH_PAIR dict.
             for (s1, s2), bw in COPY_BW_SWITCH_PAIR.items():
@@ -161,7 +159,7 @@ def first_fit_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
 
     substrate_hosts_used_for_mapping_vnr_hosts = []
 
-    # Going over every host to try a mapping (as per this random algorithm).
+    # Going over every host to try a mapping (as per this algorithm).
     for h in range(1, num_hosts + 1):
         host_mapped_successfully = False
         # In this algorithm, we iterate in the order of the given hosts; more like fcfs.
@@ -266,6 +264,11 @@ def first_fit_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
     print("op.SUBSTRATE_HOSTS_USED: ", op.SUBSTRATE_HOSTS_USED)
     print("op.SUBSTRATE_LINKS_USED: ", op.SUBSTRATE_LINKS_USED)
     print("===============================================================\n")
+
+    print("\n\n\n\n##############")
+    print("cpu_reqs_for_vnr_mapping: ", cpu_reqs_for_vnr_mapping)
+    print("bw_reqs_for_vnr_mapping: ", bw_reqs_for_vnr_mapping)
+    print("\n\n\n")
 
     return (cpu_reqs_for_vnr_mapping, bw_reqs_for_vnr_mapping)
 
