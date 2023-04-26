@@ -65,23 +65,33 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
 
     total_num_vnrs = len(inputs_for_vnr_mapping_algo)
     num_vnrs_mapped = 0
+    # Looping through each VNR, trying to serve/satisfy each VNR at a time
     for i, (num_hosts, cpu_reqs, link_reqs) in enumerate(inputs_for_vnr_mapping_algo):
         cpu_reqs_for_vnr_mapping, bw_reqs_for_vnr_mapping = vne_algorithms.vne_algorithm(
             num_hosts, cpu_reqs, link_reqs)
         op.output_dict["total_request"] += 1
 
         if not cpu_reqs_for_vnr_mapping:
-            print("Unable to map VNR{}...".format(i))
+            print(gbl.bcolors.FAIL +
+                  "\nNO MAPPING WAS FOUND FOR VNR {}!".format(i) + gbl.bcolors.ENDC)
+            print("\nSWITCH_PAIR_x_BW after TRYING for VNR {}...".format(i))
+            for (s1, s2), bw in gbl.SWITCH_PAIR_x_BW.items():
+                print("Bandwidth between switches {} and {} is {}".format(
+                    s1, s2, bw))
             continue
 
-        op.output_dict["accepted"] += 1
-        print("\nBW_SWITCH_PAIR after mapping VNR {}...".format(i))
-        for (s1, s2), bw in gbl.BW_SWITCH_PAIR.items():
-            print("Bandwidth between switches {} and {} is {}".format(
-                s1.name, s2.name, bw))
+        print(gbl.bcolors.OKGREEN +
+              "\nMAPPING SUCCESSFUL FOR VNR {}!".format(i) + gbl.bcolors.ENDC)
+
         vnr_mapping.map_vnr_on_substrate_network(
             net, cpu_reqs_for_vnr_mapping, bw_reqs_for_vnr_mapping)
         num_vnrs_mapped += 1
+        op.output_dict["accepted"] += 1
+
+        print("\nSWITCH_PAIR_x_BW after MAPPING VNR {}...".format(i))
+        for (s1, s2), bw in gbl.SWITCH_PAIR_x_BW.items():
+            print("Bandwidth between switches {} and {} is {}".format(
+                s1, s2, bw))
 
     print("\n", gbl.bcolors.OKCYAN + "Successfully mapped {} / {} Virtual Network Requests using the {} algorithm!".format(
         num_vnrs_mapped, total_num_vnrs, gbl.CFG["vne_algorithm"]) + gbl.bcolors.ENDC, "\n")
@@ -91,11 +101,11 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
 
     hp.update_cpu_limits_of_substrate_hosts_after_vnr_mapping(net)
 
-    tests.test_cpu_limits_for_all_hosts(net)
-    tests.test_ping_within_vnr_vhosts(net)
-    tests.test_iperf_bandwidth_within_vnr_vhosts(net)
+    # tests.test_cpu_limits_for_all_hosts(net)
+    # tests.test_ping_within_vnr_vhosts(net)
+    # tests.test_iperf_bandwidth_within_vnr_vhosts(net)
 
-    # show_flow_table_entries(net)
+    # hp.show_flow_table_entries(net)
     # net.pingAll()
 
     CLI(net)

@@ -7,6 +7,8 @@ import helpers as hp
 from mininet.cli import CLI
 import output as op
 
+random.seed(5)
+
 
 class SubstrateHost(Host):
     """
@@ -125,8 +127,10 @@ class SpineLeafSubstrateNetwork(Topo):
                                              ["bw_limit_min"], gbl.CFG["substrate"]["spine_to_leaf_links"]["bw_limit_max"])
                 self.addLink(spine_switch.name,
                              leaf_switch.name, cls=TCLink, bw=bw_random)
-                gbl.BW_SWITCH_PAIR[(spine_switch, leaf_switch)] = bw_random
-                gbl.BW_SWITCH_PAIR[(leaf_switch, spine_switch)] = bw_random
+                gbl.SWITCH_PAIR_x_BW[(
+                    spine_switch.name, leaf_switch.name)] = bw_random
+                gbl.SWITCH_PAIR_x_BW[(
+                    leaf_switch.name, spine_switch.name)] = bw_random
                 spine_switch.next_port_number += 1
                 leaf_switch.next_port_number += 1
                 op.output_dict["pre_resource"] += bw_random
@@ -142,8 +146,10 @@ class SpineLeafSubstrateNetwork(Topo):
                                              ["bw_limit_min"], gbl.CFG["substrate"]["leaf_to_host_links"]["bw_limit_max"])
                 self.addLink(host_switch.name, leaf_switch.name,
                              cls=TCLink, bw=bw_random)
-                gbl.BW_SWITCH_PAIR[(host_switch, leaf_switch)] = bw_random
-                gbl.BW_SWITCH_PAIR[(leaf_switch, host_switch)] = bw_random
+                gbl.SWITCH_PAIR_x_BW[(
+                    host_switch.name, leaf_switch.name)] = bw_random
+                gbl.SWITCH_PAIR_x_BW[(
+                    leaf_switch.name, host_switch.name)] = bw_random
                 host_index += 1
                 leaf_switch.next_port_number += 1
                 host_switch.next_port_number += 1
@@ -154,12 +160,12 @@ class SpineLeafSubstrateNetwork(Topo):
         for (host_switch, host) in zip(gbl.HOST_SWITCHES, gbl.HOSTS):
             self.addLink(host_switch.name, host.name)
             host_switch.next_port_number += 1
-            # Note that we do NOT count this as a link in the total_links because
-            # this link is mainly used for implementation purposes which is the reason
+            # Note that we DO count this as a link in the total_links as well even
+            # though its mainly used for implementation purposes which is the reason
             # for a 'modified spine leaf' architecture. But, since we are counting the
             # total links in the spine leaf topology, we only count the links between
             # spine-leaf and leaf-host, which has already been done above.
-            op.output_dict["total_links"] += 0
+            op.output_dict["total_links"] += 1
 
 
 def add_flow_entries_for_substrate_network(net):
@@ -239,12 +245,13 @@ def populate_path_between_hosts():
         current_leaf_switch = path[-1][1]
         leaf_switch_ip_subnet = current_leaf_switch.ip_subnet
         dst_h_under_ip_subnet = ".".join(dst_h.ip_addr.split(".")[0:2])
-        # print(src_h.name, dst_h.name, "   ",
         # If destination host is under this leaf switch, then packet doesn't go to
         # spine leaf layer at all.
         if dst_h_under_ip_subnet != leaf_switch_ip_subnet:
-            # Update the next spine switch in the path.
-            next_spine_switch_subnet = leaf_switch_ip_subnet.split(".")[0]
+            # Update the next spine switch in the path. Note that the spine leaf switch is
+            # selected based on the destination host's IP subnet. The same logic is used
+            # in `get_output_port_for_leaf_switches_towards_spine` function in `helpers` module.
+            next_spine_switch_subnet = dst_h_under_ip_subnet.split(".")[0]
             next_spine_switch = gbl.SPINE_LAYER_IP_SUBNET_x_SWITCH[next_spine_switch_subnet]
             gbl.PATH_BETWEEN_HOSTS[(src_h, dst_h)].append(
                 (current_leaf_switch, next_spine_switch))

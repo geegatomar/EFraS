@@ -58,11 +58,13 @@ HOST_LAYER_IP_SUBNET_x_SWITCH = {}
 # (h1, h3): [('h1', 'sh1'), ('sh1', 's2_1'), ('s2_1', 's1_1'), ('s1_1', 's2_2'), ('s2_2', 'sh3'), ('sh3', 'h3')]}
 PATH_BETWEEN_HOSTS = {}
 
-# Bandwidth of the link between the given switch pair.
-# Note that in the example below 'switch names' are shown, but in the datastructure, we are
-# storing the whole Host and Switch object, not just the names.
+
+# Bandwidth of the link between the given switch pair. This variable is used to keep track
+# of whether there is enough link bandwidth when trying out new mappings. And hence is updated
+# in the `vnr_mapping` module when a VNR is being served.
+# Switch pair is specified in Names (strings) instead of the objects itself.
 # Example: {('s1_1', 's2_1'): 29, ('s2_1', 's1_1'): 29}
-BW_SWITCH_PAIR = {}
+SWITCH_PAIR_x_BW = {}
 
 # List of MappedVNR objects. Consists of information of all the Virtual Network Requests that
 # have been mapped and served in the topology network.

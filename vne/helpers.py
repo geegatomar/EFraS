@@ -4,6 +4,8 @@ from substrate import SubstrateHost
 import networkx as nx
 import random
 
+random.seed(5)
+
 
 def get_output_port_for_spine_switches(dst_16_bit_subnet):
     """ Rules for spine (layer 1) switches.

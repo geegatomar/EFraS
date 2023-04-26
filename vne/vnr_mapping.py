@@ -181,6 +181,8 @@ def _add_tc_htb(net, vhost_name: str, bandwidth_list: List[int], dst_ip_list: Li
     print("------------------------------------------\n")
 
 
+#######################################################################################
+
 def map_vnr_on_substrate_network(net, host_requirements, links_with_bw):
     """ Map virtual network request on the substrate network.
     host_requirements: List[Tuple(str, int)]
@@ -194,6 +196,11 @@ def map_vnr_on_substrate_network(net, host_requirements, links_with_bw):
                 ('h1', 'h3', 20),
                 ('h2', 'h4', 60)]
     """
+    # Tracking 'cost' and 'revenue' with respect to bandwidth for output results.
+    total_bw_cost_spent_on_substrate = 0
+    total_bw_requested = 0
+    total_cpu_reqs = 0
+
     vnr_number = len(gbl.MAPPED_VNRS) + 1
     substrate_hosts = []
     virtual_hosts = []
@@ -203,6 +210,8 @@ def map_vnr_on_substrate_network(net, host_requirements, links_with_bw):
             net, virtual_host_name, host_name, cpu_req, vnr_number)
         substrate_hosts.append(substrate_host)
         virtual_hosts.append(virtual_host)
+        op.SUBSTRATE_HOSTS_USED.add(host_name)
+        total_cpu_reqs += cpu_req
 
     host_names = [h[0] for h in host_requirements]
     vnr = MappedVNR(substrate_hosts, virtual_hosts, vnr_number)
@@ -239,3 +248,68 @@ def map_vnr_on_substrate_network(net, host_requirements, links_with_bw):
             bws.append(link[0])
             dst_ips.append(link[1].ip_addr)
         _add_tc_htb(net, vhost.name, bws, dst_ips)
+
+    # Reducing the bandwidth values in gbl.SWITCH_PAIR_x_BW
+    for (h1_name, h2_name, bw) in links_with_bw:
+        h1 = gbl.HOSTNAME_x_HOST[h1_name]
+        h2 = gbl.HOSTNAME_x_HOST[h2_name]
+
+        gbl.SWITCH_PAIR_x_BW, bw_cost_spent_on_substrate = add_link_mapping_between_hosts(
+            (h1, h2), bw, gbl.SWITCH_PAIR_x_BW, "final-vnr-mapping")
+        total_bw_cost_spent_on_substrate += bw_cost_spent_on_substrate
+        total_bw_requested += bw
+
+    print("\n===============================================================")
+    print("op.SUBSTRATE_HOSTS_USED: ", op.SUBSTRATE_HOSTS_USED)
+    print("op.SUBSTRATE_LINKS_USED: ", op.SUBSTRATE_LINKS_USED)
+    print("===============================================================\n")
+
+    # Updating the 'cost' and 'revenue' with respect to bandwidth and cpu.
+    op.output_dict["total_cost"] += total_bw_cost_spent_on_substrate
+    op.output_dict["revenue"] += total_bw_requested
+    op.output_dict["total_cost"] += total_cpu_reqs
+    op.output_dict["revenue"] += total_cpu_reqs
+
+
+def add_link_mapping_between_hosts(host_pair, bw_req, SWITCH_PAIR_x_BW, purpose="check"):
+    """ Once a host pair has been selected for doing mapping of some virtual link on it,
+    the bandwidth of all the links in the path b/w the hosts shall be reduced by how
+    much ever that virtual link has consumed on all the links in the path between hosts.
+
+    host_pair: Pair of substrate hosts.
+    bw_req: The bandwidth requirement of the virtual link, which needs to be subtracted
+        since this link is being mapped.
+    SWITCH_PAIR_x_BW: The variable storing the bw of switch pairs values, which shall be
+        updated and returned to the caller.
+    purpose: This function `add_link_mapping_between_hosts` can be called by the vne algorithms 
+        module as well, to check while its selecting hosts and links for mapping. Hence the 
+        'purpose' variable helps here. If purpose == 'final-vnr-mapping', only then we update 
+        the op.SUBSTRATE_LINKS_USED. Otherwise its just a 'check' as part of trying a vne algorithm, 
+        and we shall not update the op.SUBSTRATE_LINKS_USED yet.
+    """
+    # When adding a link mapping between substrate hosts, the bw provided to the
+    # link between these hosts must be subtracted from all the links in the path
+    # between these hosts.
+    bw_cost_spent_on_substrate = 0
+    (h1, h2) = host_pair
+    if int(h1.name[1:]) > int(h2.name[1:]):
+        host_pair = (h2, h1)
+
+    path = gbl.PATH_BETWEEN_HOSTS[host_pair]
+    for each_link in path:
+        (node1, node2) = each_link
+        bw_cost_spent_on_substrate += bw_req
+        # Note: Remember that the spine leaf achitecture we have in our project is
+        # implemented as a 'modified spine leaf' architecture, and so there is an
+        # additional layer of links in the last layer. And when we compute the 'cost'
+        # for bandwidth spent, we DO count that last 'modified' layer's links.
+        if purpose == "final-vnr-mapping":
+            op.SUBSTRATE_LINKS_USED.add((node1.name, node2.name))
+            op.SUBSTRATE_LINKS_USED.add((node2.name, node1.name))
+
+        for ((p1, p2), _) in SWITCH_PAIR_x_BW.items():
+            if (p1 == node1.name and p2 == node2.name):
+                SWITCH_PAIR_x_BW[(p1, p2)] -= bw_req
+                SWITCH_PAIR_x_BW[(p2, p1)] -= bw_req
+
+    return SWITCH_PAIR_x_BW, bw_cost_spent_on_substrate
