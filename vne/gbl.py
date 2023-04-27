@@ -66,6 +66,10 @@ PATH_BETWEEN_HOSTS = {}
 # Example: {('s1_1', 's2_1'): 29, ('s2_1', 's1_1'): 29}
 SWITCH_PAIR_x_BW = {}
 
+# The original switch pair bw values which is initialized to SWITCH_PAIR_x_BW, and is not
+# updated unlike SWITCH_PAIR_x_BW (which is updated throughout the execution of the program).
+ORIGINAL_SWITCH_PAIR_x_BW = {}
+
 # List of MappedVNR objects. Consists of information of all the Virtual Network Requests that
 # have been mapped and served in the topology network.
 MAPPED_VNRS = []

@@ -1,4 +1,7 @@
 import pickle
+import gbl
+from statistics import mean
+from main_classes import Host
 
 output_dict = {
     "algorithm": None,
@@ -33,12 +36,56 @@ output_dict = {
     "total_nodes": 0,
     # Total number of links in the substrate network
     "total_links": 0,
+
+    # Average Bandwidth Utilization is defined as the average bandwidth
+    # utilization of the used links in the substrate network. It can be
+    # calculated by first calculating the bandwidth utilization of each
+    # link that is being used, and next taking the average of all these values.
+    "avg_bandwidth_utilization": None,
+    # Similar to average bandwidth utilization, average CRB utilization is
+    # defined as the average CRB utilization of used nodes in the substrate
+    # network. This can be calculated by first calculating the CRB utilization
+    # of each node that is being used, and next taking the average of all these
+    # values.
+    "avg_crb_utilization": None,
+    # Average link utilization is defined as the total number of substrate
+    # links utilized during the embedding of the VNRs divided by the total
+    # number of links in the substrate network.
+    "avg_link_utilization": None,
+    # Average node utilization is defined as the total number of substrate nodes
+    # utilized during the embedding of the VNRs divided by the total number of
+    # nodes in the substrate network.
+    "avg_node_utilization": None
 }
 
 # Variables used to store all the links and hosts of the substrate network
 # used by all VNRs collectively.
 SUBSTRATE_LINKS_USED = set()
 SUBSTRATE_HOSTS_USED = set()
+
+
+def get_avg_bandwidth_utilization():
+    bandwidth_utilization_of_used_links = []
+    for (s1_name, s2_name), orig_bw in gbl.ORIGINAL_SWITCH_PAIR_x_BW.items():
+        bw_after_mappings = gbl.SWITCH_PAIR_x_BW[(s1_name, s2_name)]
+        # If the link has been utilized, then append its utilization to list.
+        if bw_after_mappings != orig_bw:
+            bandwidth_utilization_of_this_link = (
+                orig_bw - bw_after_mappings) / (orig_bw)
+            bandwidth_utilization_of_used_links.append(
+                bandwidth_utilization_of_this_link)
+    return mean(bandwidth_utilization_of_used_links)
+
+
+def get_avg_crb_utilization():
+    crb_utilization_of_used_hosts = []
+    for substrate_host in gbl.HOSTS:
+        # If the substrate host has been utilized in mapping, then append to list.
+        if substrate_host.original_cpu_limit != substrate_host.cpu_limit:
+            crb_utilization_of_this_host = (
+                substrate_host.original_cpu_limit - substrate_host.cpu_limit) / substrate_host.original_cpu_limit
+            crb_utilization_of_used_hosts.append(crb_utilization_of_this_host)
+    return mean(crb_utilization_of_used_hosts)
 
 
 def compute_remaining_output_parameters():
@@ -60,6 +107,21 @@ def compute_remaining_output_parameters():
     # Reason for diving by 2 is that we have the links (a, b) and (b, a) stored twice
     output_dict["No_of_Links_used"] = len(SUBSTRATE_LINKS_USED) / 2
     output_dict["No_of_Nodes_used"] = len(SUBSTRATE_HOSTS_USED)
+
+    try:
+        output_dict["avg_link_utilization"] = output_dict["No_of_Links_used"] / \
+            output_dict["total_links"]
+    except:
+        output_dict["avg_link_utilization"] = None
+    try:
+        output_dict["avg_node_utilization"] = output_dict["No_of_Nodes_used"] / \
+            output_dict["total_nodes"]
+    except:
+        output_dict["avg_node_utilization"] = None
+
+    output_dict["avg_bandwidth_utilization"] = get_avg_bandwidth_utilization()
+    output_dict["avg_crb_utilization"] = get_avg_crb_utilization()
+
     print("\n\noutput_dict: ", output_dict, "\n")
 
     # Write the output dict to a pickle file, which will be read by the runner.py file.

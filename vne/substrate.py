@@ -6,6 +6,7 @@ from mininet.link import TCLink
 import helpers as hp
 from mininet.cli import CLI
 import output as op
+import copy
 
 
 class SubstrateHost(Host):
@@ -33,6 +34,7 @@ class SubstrateHost(Host):
     def __init__(self, host_name, ip_addr, cpu_limit):
         super().__init__(host_name, ip_addr, cpu_limit)
         self.virtual_hosts_mapped = []
+        self.original_cpu_limit = cpu_limit
 
 
 def generate_topology(sl_factor, ll_factor, hl_factor):
@@ -168,6 +170,10 @@ class SpineLeafSubstrateNetwork(Topo):
             # links in the spine leaf topology, we only count the links between
             # spine-leaf and leaf-host, which has already been done above.
             op.output_dict["total_links"] += 0
+
+        # Populate the original switch pair bandwidth values. The variable `ORIGINAL_SWITCH_PAIR_x_BW`
+        # shall not update, whereas `SWITCH_PAIR_x_BW` dynamically changes as VNRs are served.
+        gbl.ORIGINAL_SWITCH_PAIR_x_BW = copy.deepcopy(gbl.SWITCH_PAIR_x_BW)
 
 
 def add_flow_entries_for_substrate_network(net):

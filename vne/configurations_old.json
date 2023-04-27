@@ -1,39 +1,39 @@
 {
     "substrate": {
 
-        "sl_factor": 4,
-        "ll_factor": 4,
+        "sl_factor": 2,
+        "ll_factor": 2,
         "hl_factor": 3,
 
-        "cpu_limit_min": 20,
-        "cpu_limit_max": 100,
+        "cpu_limit_min": 50,
+        "cpu_limit_max": 80,
 
         "spine_to_leaf_links": {
-            "bw_limit_min": 50,
-            "bw_limit_max": 100
+            "bw_limit_min": 20,
+            "bw_limit_max": 30
         },
 
         "leaf_to_host_links": {
-            "bw_limit_min": 25,
-            "bw_limit_max": 50
+            "bw_limit_min": 10,
+            "bw_limit_max": 20
         }
     },
 
     "vnrs": {
         "num_vnrs": 2, 
         "min_nodes": 2, 
-        "max_nodes": 6, 
+        "max_nodes": 3, 
         "probability": 0.4, 
-        "min_cpu": 1,
-        "max_cpu": 10, 
-        "min_bw": 1, 
-        "max_bw": 5
+        "min_cpu": 10,
+        "max_cpu": 15, 
+        "min_bw": 3, 
+        "max_bw": 4
     },
 
     "Xvne_algorithm": "worst-fit-algorithm",
     "vne_algorithm": "first-fit-algorithm",
 
-    "iterations": 3,
+    "iterations": 2,
     "vne_algorithms": ["first-fit-algorithm", "worst-fit-algorithm"],
-    "num_vnrs_list": [5, 10, 15]
+    "num_vnrs_list": [1, 2, 3]
 }

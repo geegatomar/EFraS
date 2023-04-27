@@ -35,7 +35,11 @@ OUTPUT_RESULTS = {
     "No_of_Nodes_used": [],
     "total_nodes": [],
     "total_links": [],
-    "execution_time": [],
+    "total_execution_time": [],
+    "avg_bandwidth_utilization": [],
+    "avg_crb_utilization": [],
+    "avg_link_utilization": [],
+    "avg_node_utilization": []
 }
 
 
@@ -55,7 +59,12 @@ def add_row_to_excel(op, seed_value):
     OUTPUT_RESULTS["No_of_Nodes_used"].append(op["No_of_Nodes_used"])
     OUTPUT_RESULTS["total_nodes"].append(op["total_nodes"])
     OUTPUT_RESULTS["total_links"].append(op["total_links"])
-    OUTPUT_RESULTS["execution_time"].append(op["execution_time"])
+    OUTPUT_RESULTS["total_execution_time"].append(op["total_execution_time"])
+    OUTPUT_RESULTS["avg_bandwidth_utilization"].append(
+        op["avg_bandwidth_utilization"])
+    OUTPUT_RESULTS["avg_crb_utilization"].append(op["avg_crb_utilization"])
+    OUTPUT_RESULTS["avg_link_utilization"].append(op["avg_link_utilization"])
+    OUTPUT_RESULTS["avg_node_utilization"].append(op["avg_node_utilization"])
 
 
 def main():
@@ -94,7 +103,7 @@ def main():
                     with open('output_dict.pickle', 'rb') as handle:
                         output_dict = pickle.load(handle)
                     # Compute execution time in seconds
-                    output_dict["execution_time"] = end - start
+                    output_dict["total_execution_time"] = end - start
                     # The same seed value signifies that the randomly generated configurations were same
                     # for the multiple vne algorithms.
                     add_row_to_excel(output_dict, seed_value)
