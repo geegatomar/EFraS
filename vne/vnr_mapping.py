@@ -298,18 +298,19 @@ def add_link_mapping_between_hosts(host_pair, bw_req, SWITCH_PAIR_x_BW, purpose=
     path = gbl.PATH_BETWEEN_HOSTS[host_pair]
     for each_link in path:
         (node1, node2) = each_link
-        bw_cost_spent_on_substrate += bw_req
-        # Note: Remember that the spine leaf achitecture we have in our project is
-        # implemented as a 'modified spine leaf' architecture, and so there is an
-        # additional layer of links in the last layer. And when we compute the 'cost'
-        # for bandwidth spent, we DO count that last 'modified' layer's links.
-        if purpose == "final-vnr-mapping":
-            op.SUBSTRATE_LINKS_USED.add((node1.name, node2.name))
-            op.SUBSTRATE_LINKS_USED.add((node2.name, node1.name))
 
         for ((p1, p2), _) in SWITCH_PAIR_x_BW.items():
             if (p1 == node1.name and p2 == node2.name):
                 SWITCH_PAIR_x_BW[(p1, p2)] -= bw_req
                 SWITCH_PAIR_x_BW[(p2, p1)] -= bw_req
+                bw_cost_spent_on_substrate += bw_req
+                # Note: Remember that the spine leaf achitecture we have in our project is
+                # implemented as a 'modified spine leaf' architecture, and so there is an
+                # additional layer of links in the last layer. And when we compute the 'cost'
+                # for bandwidth spent, we DON'T count that last 'modified' layer's links
+                # since this is just an implementation optimization.
+                if purpose == "final-vnr-mapping":
+                    op.SUBSTRATE_LINKS_USED.add((node1.name, node2.name))
+                    op.SUBSTRATE_LINKS_USED.add((node2.name, node1.name))
 
     return SWITCH_PAIR_x_BW, bw_cost_spent_on_substrate

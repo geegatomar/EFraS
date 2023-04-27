@@ -1,5 +1,6 @@
-# Virtual Network Embedding (VNE) using mininet (SDN), with RYU controller.
+# Virtual Network Embedding (VNE) using mininet (SDN).
 # Command to run file:      sudo python3 main.py
+# To run with command line args:    sudo python3 main.py -s 5 -a worst-fit-algorithm -n 10
 
 from mininet.net import Mininet
 from mininet.log import setLogLevel
@@ -27,6 +28,8 @@ parser.add_argument(
     "-s", "--Seed", help="Seed value for randomly generating topology.")
 parser.add_argument(
     "-a", "--Algorithm", help="VNE Algorithm to use for mapping VNRs.")
+parser.add_argument(
+    "-n", "--NumVNRs", help="Number of VNRs to map and run VNE algorithm for.")
 
 
 def _get_seed_value():
@@ -38,16 +41,26 @@ def _get_seed_value():
         try:
             seed_value = int(args.Seed)
         except:
-            print("Seed value in command line argument must be an integer.")
+            raise Exception(
+                "Seed value in command line argument must be an integer.")
     return seed_value
 
 
-def _vne_algorithm_selection():
-    """ The VNE algorithm specified in the configurations.json will be selected.
-    But you can override that choice by specifying an algorithm in command line args."""
+def _handle_command_line_args():
+    """ Handles the command line arguments specified while running this file. """
     args = parser.parse_args()
+    # The VNE algorithm can be specified in the configurations.json. But you can
+    # override that choice by specifying an algorithm in command line args.
     if args.Algorithm:
         gbl.CFG["vne_algorithm"] = args.Algorithm
+    # The number of vnrs can be specified under ["vnrs"]["num_vnrs"]. But that choice
+    # can be overridden by specifying number of vnrs in command line args as well.
+    if args.NumVNRs:
+        try:
+            gbl.CFG["vnrs"]["num_vnrs"] = int(args.NumVNRs)
+        except:
+            raise Exception(
+                "Number of VNRs in command line argument must be an integer.")
 
 
 def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
@@ -62,7 +75,7 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
     """
     gbl.NUM_HOSTS_PER_LEAF_SWITCH = hl_factor
     gbl.SEED = _get_seed_value()
-    _vne_algorithm_selection()
+    _handle_command_line_args()
 
     substrate.generate_topology(sl_factor, ll_factor, hl_factor)
 

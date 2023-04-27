@@ -2,6 +2,14 @@
 # multiple vne algorithms at once, as per the specifications in the configurations.json
 # file.
 # Command to run this file: `sudo python3 runner.py`
+
+# NOTE: To run this file, you must make sure to specify all the configurations in
+# the configurations.json file; especially these 3 configurations which are specific
+# to this runner.py file (which main.py doesn't look at):
+# - Number of iterations to run for:   "iterations": 5,
+# - List of VNE algorithms to run on:  "vne_algorithms": ["first-fit-algorithm", "worst-fit-algorithm"],
+# - List of number of VNRs to run for: "num_vnrs_list": [1, 2, 3]
+
 import gbl
 import json
 import pandas as pd
@@ -27,6 +35,7 @@ OUTPUT_RESULTS = {
     "No_of_Nodes_used": [],
     "total_nodes": [],
     "total_links": [],
+    "execution_time": [],
 }
 
 
@@ -46,6 +55,7 @@ def add_row_to_excel(op, seed_value):
     OUTPUT_RESULTS["No_of_Nodes_used"].append(op["No_of_Nodes_used"])
     OUTPUT_RESULTS["total_nodes"].append(op["total_nodes"])
     OUTPUT_RESULTS["total_links"].append(op["total_links"])
+    OUTPUT_RESULTS["execution_time"].append(op["execution_time"])
 
 
 def main():
@@ -59,28 +69,40 @@ def main():
 
     num_iterations = gbl.CFG["iterations"]
     vne_algorithms_to_run = gbl.CFG["vne_algorithms"]
+    num_vnrs_list = gbl.CFG["num_vnrs_list"]
 
     for iter in range(1, num_iterations + 1):
         print("\n\nRUNNING ITERATION {}...".format(iter))
         seed_value = random.randint(1, 10000)
-        for vne_algo in vne_algorithms_to_run:
-            print("\n\nRUNNING VNE ALGORITHM {}  (iteration = {}, seed = {})...\n\n".format(
-                vne_algo, iter, seed_value))
 
-            # Running the `main.py` by specifying the command line arguments for the
-            # seed value and the vne algorithm to use for vnr mapping.
-            os.system(
-                'sudo python3 main.py -s {} -a {}'.format(seed_value, vne_algo))
+        for num_vnrs in num_vnrs_list:
 
-            # Read results of this one iteration of one vne algorithm from pickle file, and
-            # add the row to excel's output results.
-            with open('output_dict.pickle', 'rb') as handle:
-                output_dict = pickle.load(handle)
-            # The same seed value signifies that the randomly generated configurations were same
-            # for the multiple vne algorithms.
-            add_row_to_excel(output_dict, seed_value)
+            for vne_algo in vne_algorithms_to_run:
+                print("\n\nRUNNING VNE ALGORITHM {}  (iteration = {}, num vnrs = {}, seed = {})...\n\n".format(
+                    vne_algo, iter, num_vnrs, seed_value))
 
-            time.sleep(2)
+                # Running the `main.py` by specifying the command line arguments for the
+                # seed value and the vne algorithm to use for vnr mapping.
+                start = time.time()
+                os.system(
+                    'sudo python3 main.py -s {} -a {} -n {}'.format(seed_value, vne_algo, num_vnrs))
+                end = time.time()
+
+                try:
+                    # Read results of this one iteration of one vne algorithm from pickle file, and
+                    # add the row to excel's output results.
+                    with open('output_dict.pickle', 'rb') as handle:
+                        output_dict = pickle.load(handle)
+                    # Compute execution time in seconds
+                    output_dict["execution_time"] = end - start
+                    # The same seed value signifies that the randomly generated configurations were same
+                    # for the multiple vne algorithms.
+                    add_row_to_excel(output_dict, seed_value)
+                except:
+                    print("Unable to obtain output_dict results for iteration={}, num_vnrs={}, vne_algo={}".format(
+                        iter, num_vnrs, vne_algo))
+
+                time.sleep(2)
 
     excel = pd.DataFrame(OUTPUT_RESULTS)
     excel.to_excel("Results.xlsx")

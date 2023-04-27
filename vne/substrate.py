@@ -162,12 +162,12 @@ class SpineLeafSubstrateNetwork(Topo):
         for (host_switch, host) in zip(gbl.HOST_SWITCHES, gbl.HOSTS):
             self.addLink(host_switch.name, host.name)
             host_switch.next_port_number += 1
-            # Note that we DO count this as a link in the total_links as well even
-            # though its mainly used for implementation purposes which is the reason
-            # for a 'modified spine leaf' architecture. But, since we are counting the
-            # total links in the spine leaf topology, we only count the links between
+            # Note that we DON'T count this as a link in the total_links as its a
+            # 'modified spine leaf' architecture and the last layer's links are mainly
+            # used for implementation purposes. And, since we are counting the total
+            # links in the spine leaf topology, we only count the links between
             # spine-leaf and leaf-host, which has already been done above.
-            op.output_dict["total_links"] += 1
+            op.output_dict["total_links"] += 0
 
 
 def add_flow_entries_for_substrate_network(net):
