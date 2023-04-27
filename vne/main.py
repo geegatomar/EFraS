@@ -15,10 +15,39 @@ import tests
 import vne_algorithms
 import json
 import output as op
+import argparse
+import random
 
 # Note that all examples for the variables/data structures below are for the topology
 # when sl_factor = 3, ll_factor = 2, hl_factor = 2.
 # Topology visualization for this example can be found here: https://tinyurl.com/mr3c5ap3
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "-s", "--Seed", help="Seed value for randomly generating topology.")
+parser.add_argument(
+    "-a", "--Algorithm", help="VNE Algorithm to use for mapping VNRs.")
+
+
+def _get_seed_value():
+    """ Gets the seed value for the random generator in code. Gets the value from command
+    line arguments if specified, else defaults to a 'random' seed value. """
+    args = parser.parse_args()
+    seed_value = random.randint(1, 10000)
+    if args.Seed:
+        try:
+            seed_value = int(args.Seed)
+        except:
+            print("Seed value in command line argument must be an integer.")
+    return seed_value
+
+
+def _vne_algorithm_selection():
+    """ The VNE algorithm specified in the configurations.json will be selected.
+    But you can override that choice by specifying an algorithm in command line args."""
+    args = parser.parse_args()
+    if args.Algorithm:
+        gbl.CFG["vne_algorithm"] = args.Algorithm
 
 
 def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
@@ -32,21 +61,28 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
     hl_factor: Number of host layer (hl) hosts under (connected to) each leaf switch.
     """
     gbl.NUM_HOSTS_PER_LEAF_SWITCH = hl_factor
+    gbl.SEED = _get_seed_value()
+    _vne_algorithm_selection()
 
     substrate.generate_topology(sl_factor, ll_factor, hl_factor)
 
     topo = substrate.SpineLeafSubstrateNetwork()
     substrate.populate_path_between_hosts()
 
-    # Connecting to remote controller, since we use the RYU controller to populate
-    # the flow table entries for ARP flooding.
+    # Making use of default controller in mininet. If you want to use any other controller
+    # such as RYU controller, just replace `net = Mininet(topo, host=host)` by
+    # `net = Mininet(topo, host=host, controller=RemoteController)` below.
     host = custom(CPULimitedHost, sched='cfs')
-    net = Mininet(topo, host=host, controller=RemoteController)
+    net = Mininet(topo, host=host)
     net.start()
 
     # Add ARP table entries for the defaultRoute IPs.
     for host in gbl.HOSTS:
         hp.add_arp_entry_for_host(host, net)
+
+    # Adding ARP flood entries for all switches in network.
+    for switch in (gbl.SPINE_SWITCHES + gbl.LEAF_SWITCHES + gbl.HOST_SWITCHES):
+        hp.add_arp_flood_entry(switch, net)
 
     # Populating flow entries for substrate network.
     substrate.add_flow_entries_for_substrate_network(net)
@@ -108,7 +144,7 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
     # hp.show_flow_table_entries(net)
     # net.pingAll()
 
-    CLI(net)
+    # CLI(net)
     net.stop()
 
 

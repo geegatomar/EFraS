@@ -31,5 +31,8 @@
     },
 
     "vne_algorithm": "worst-fit-algorithm",
-    "Xvne_algorithm": "first-fit-algorithm"
+    "Xvne_algorithm": "first-fit-algorithm",
+
+    "iterations": 2,
+    "vne_algorithms": ["first-fit-algorithm", "worst-fit-algorithm"]
 }

@@ -7,8 +7,6 @@ import helpers as hp
 from mininet.cli import CLI
 import output as op
 
-random.seed(5)
-
 
 class SubstrateHost(Host):
     """
@@ -43,6 +41,8 @@ def generate_topology(sl_factor, ll_factor, hl_factor):
     sl_factor: Number of switches in spine layer (sl).
     ll_factor: Number of leaf layer (ll) switches under the subnet of each spine switch.
     hl_factor: Number of host layer (hl) hosts under (connected to) each leaf switch. """
+
+    random.seed(gbl.SEED)
 
     # Starting IP addressing of hosts with "10.0.0.0"
     first_ip_subnet = 10
@@ -100,6 +100,8 @@ def generate_topology(sl_factor, ll_factor, hl_factor):
 class SpineLeafSubstrateNetwork(Topo):
     def __init__(self):
         Topo.__init__(self)
+
+        random.seed(gbl.SEED)
 
         # Add spine switches (layer 1 switches in spine-leaf topology), named s2_XYZ.
         for spine_switch in gbl.SPINE_SWITCHES:

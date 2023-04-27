@@ -72,3 +72,6 @@ MAPPED_VNRS = []
 
 # The user configurable values obtained from `configurations.json` file populate this variable.
 CFG = None
+
+# Seed value used for generating the random numbers for topology.
+SEED = None

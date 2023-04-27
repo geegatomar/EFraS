@@ -1,0 +1,96 @@
+# The runner.py file is used to execute the main.py for multiple iterations and for
+# multiple vne algorithms at once, as per the specifications in the configurations.json
+# file.
+# Command to run this file: `sudo python3 runner.py`
+import gbl
+import json
+import pandas as pd
+import os
+import time
+import random
+import pickle
+
+
+OUTPUT_RESULTS = {
+    "seed": [],
+    "algorithm": [],
+    "revenue": [],
+    "total_cost": [],
+    "revenuetocostratio": [],
+    "accepted": [],
+    "total_request": [],
+    "embeddingratio": [],
+    "pre_resource": [],
+    "post_resource": [],
+    "consumed": [],
+    "No_of_Links_used": [],
+    "No_of_Nodes_used": [],
+    "total_nodes": [],
+    "total_links": [],
+}
+
+
+def add_row_to_excel(op, seed_value):
+    OUTPUT_RESULTS["seed"].append(seed_value)
+    OUTPUT_RESULTS["algorithm"].append(op["algorithm"])
+    OUTPUT_RESULTS["revenue"].append(op["revenue"])
+    OUTPUT_RESULTS["total_cost"].append(op["total_cost"])
+    OUTPUT_RESULTS["revenuetocostratio"].append(op["revenuetocostratio"])
+    OUTPUT_RESULTS["accepted"].append(op["accepted"])
+    OUTPUT_RESULTS["total_request"].append(op["total_request"])
+    OUTPUT_RESULTS["embeddingratio"].append(op["embeddingratio"])
+    OUTPUT_RESULTS["pre_resource"].append(op["pre_resource"])
+    OUTPUT_RESULTS["post_resource"].append(op["post_resource"])
+    OUTPUT_RESULTS["consumed"].append(op["consumed"])
+    OUTPUT_RESULTS["No_of_Links_used"].append(op["No_of_Links_used"])
+    OUTPUT_RESULTS["No_of_Nodes_used"].append(op["No_of_Nodes_used"])
+    OUTPUT_RESULTS["total_nodes"].append(op["total_nodes"])
+    OUTPUT_RESULTS["total_links"].append(op["total_links"])
+
+
+def main():
+    f = open('configurations.json')
+    gbl.CFG = json.load(f)
+    f.close()
+
+    # Clean up (mininet)
+    print("\nPerforming clean up (mininet)...\n\n")
+    os.system('sudo mn -c')
+
+    num_iterations = gbl.CFG["iterations"]
+    vne_algorithms_to_run = gbl.CFG["vne_algorithms"]
+
+    for iter in range(1, num_iterations + 1):
+        print("\n\nRUNNING ITERATION {}...".format(iter))
+        seed_value = random.randint(1, 10000)
+        for vne_algo in vne_algorithms_to_run:
+            print("\n\nRUNNING VNE ALGORITHM {}  (iteration = {}, seed = {})...\n\n".format(
+                vne_algo, iter, seed_value))
+
+            # Running the `main.py` by specifying the command line arguments for the
+            # seed value and the vne algorithm to use for vnr mapping.
+            os.system(
+                'sudo python3 main.py -s {} -a {}'.format(seed_value, vne_algo))
+
+            # Read results of this one iteration of one vne algorithm from pickle file, and
+            # add the row to excel's output results.
+            with open('output_dict.pickle', 'rb') as handle:
+                output_dict = pickle.load(handle)
+            # The same seed value signifies that the randomly generated configurations were same
+            # for the multiple vne algorithms.
+            add_row_to_excel(output_dict, seed_value)
+
+            time.sleep(2)
+
+    excel = pd.DataFrame(OUTPUT_RESULTS)
+    excel.to_excel("Results.xlsx")
+
+    try:
+        # Delete the intermediary pickle file after the Results.xlsx has been generated.
+        os.remove("output_dict.pickle")
+    except:
+        pass
+
+
+if __name__ == '__main__':
+    main()

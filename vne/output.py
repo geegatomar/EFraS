@@ -1,7 +1,4 @@
-import pandas as pd
-import gbl
-import datetime
-from zoneinfo import ZoneInfo
+import pickle
 
 output_dict = {
     "algorithm": None,
@@ -43,40 +40,6 @@ output_dict = {
 SUBSTRATE_LINKS_USED = set()
 SUBSTRATE_HOSTS_USED = set()
 
-OUTPUT_RESULTS = {
-    "algorithm": [],
-    "revenue": [],
-    "total_cost": [],
-    "revenuetocostratio": [],
-    "accepted": [],
-    "total_request": [],
-    "embeddingratio": [],
-    "pre_resource": [],
-    "post_resource": [],
-    "consumed": [],
-    "No_of_Links_used": [],
-    "No_of_Nodes_used": [],
-    "total_nodes": [],
-    "total_links": [],
-}
-
-
-def add_row_to_excel(op):
-    OUTPUT_RESULTS["algorithm"].append(op["algorithm"])
-    OUTPUT_RESULTS["revenue"].append(op["revenue"])
-    OUTPUT_RESULTS["total_cost"].append(op["total_cost"])
-    OUTPUT_RESULTS["revenuetocostratio"].append(op["revenuetocostratio"])
-    OUTPUT_RESULTS["accepted"].append(op["accepted"])
-    OUTPUT_RESULTS["total_request"].append(op["total_request"])
-    OUTPUT_RESULTS["embeddingratio"].append(op["embeddingratio"])
-    OUTPUT_RESULTS["pre_resource"].append(op["pre_resource"])
-    OUTPUT_RESULTS["post_resource"].append(op["post_resource"])
-    OUTPUT_RESULTS["consumed"].append(op["consumed"])
-    OUTPUT_RESULTS["No_of_Links_used"].append(op["No_of_Links_used"])
-    OUTPUT_RESULTS["No_of_Nodes_used"].append(op["No_of_Nodes_used"])
-    OUTPUT_RESULTS["total_nodes"].append(op["total_nodes"])
-    OUTPUT_RESULTS["total_links"].append(op["total_links"])
-
 
 def compute_remaining_output_parameters():
     # Some of the parameters of `output_dict` are directly populated from code.
@@ -99,15 +62,6 @@ def compute_remaining_output_parameters():
     output_dict["No_of_Nodes_used"] = len(SUBSTRATE_HOSTS_USED)
     print("\n\noutput_dict: ", output_dict, "\n")
 
-    # Output the results to excel sheet as well.
-    add_row_to_excel(output_dict)
-    excel = pd.DataFrame(OUTPUT_RESULTS)
-    excel.to_excel("Results.xlsx")
-
-    num_vnrs = gbl.CFG["vnrs"]["num_vnrs"]
-    vne_algo = gbl.CFG["vne_algorithm"]
-    ft = "%Y-%m-%dT%H:%M:%S%z"
-    time_now = datetime.datetime.now(tz=ZoneInfo('Asia/Kolkata')).strftime(ft)
-
-    excel.to_excel("Results_seed5_{}_{}_{}.xlsx".format(
-        vne_algo, num_vnrs, time_now))
+    # Write the output dict to a pickle file, which will be read by the runner.py file.
+    with open('output_dict.pickle', 'wb') as handle:
+        pickle.dump(output_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)

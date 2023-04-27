@@ -4,8 +4,6 @@ from substrate import SubstrateHost
 import networkx as nx
 import random
 
-random.seed(5)
-
 
 def get_output_port_for_spine_switches(dst_16_bit_subnet):
     """ Rules for spine (layer 1) switches.
@@ -75,8 +73,7 @@ def get_default_router_for_host(host):
 
 def add_arp_entry_for_host(host, net):
     """ Add entry in ARP table of host so that it doesn't send ARP request for 
-    the default router. 
-    host_str: Host expected in string format. Example: 'h1'."""
+    the default router. """
     default_router_ip = get_default_router_for_host(host)
     net[host.name].cmd('arp -s {} 11:22:33:44:55:66'.format(default_router_ip))
 
@@ -86,6 +83,13 @@ def add_arp_entry_for_host(host, net):
         ip_addr = ".".join(ip_split)
         if host.ip_addr != ip_addr:
             net[host.name].cmd('arp -s {} 11:22:33:44:55:66'.format(ip_addr))
+
+
+def add_arp_flood_entry(switch, net):
+    """ Adding ARP flood entries for specified switch. """
+    command = "ovs-ofctl add-flow {} eth_type=0x0806,priority=0,actions=FLOOD".format(
+        switch.name)
+    CLI.do_sh(net, command)
 
 
 def show_flow_table_entries(net):
@@ -110,6 +114,8 @@ def update_cpu_limits_of_substrate_hosts_after_vnr_mapping(net):
 
 def create_vnrs(num_vnrs=5, min_nodes=2, max_nodes=6, probability=0.4, min_cpu=10, max_cpu=50, min_bw=1, max_bw=5):
     # Note: If you want a connected graph, do not give a probability of less than 0.1.
+    random.seed(gbl.SEED)
+
     vnrs = []
     print("\nCreating VNRs...")
     for req in range(num_vnrs):
