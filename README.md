@@ -45,8 +45,8 @@
 
 ## Overview
 This project uses mininet to emulate a network topology for the Virtual Network Embedding (VNE) problem. Mininet provides a virtual test bed and development environment for software-defined networks (SDN).
-- The switches used in the mininet topology are Open vSwitches, and hence can be configured using the Open Flow protocol. The configuration of OVSSwitches can be done using the ovs-vsctl, ovs-ofctl commands, or collectively via an SDN controller (such as RYU controller). In our project we use RYU controller for populating basic entries that are common to all switches at the beginning, and then use ovs-vsctl and ovs-ofctl commands for populating switch-specific entries.
-- RYU controller is used to populate basic common entries; in our case for the ARP flooding entries in the flow tables.
+- The switches used in the mininet topology are Open vSwitches, and hence can be configured using the Open Flow protocol. The configuration of OVSSwitches can be done using the ovs-vsctl, ovs-ofctl commands, or collectively via an SDN controller (such as RYU controller). In our project we use  ovs-controller and use ovs-vsctl and ovs-ofctl commands for populating switch-specific entries. And also provide easy integration with the RYU controller, allowing users to benefit from the flexibility of a more powerful controller whilst still being able to use it with our emulator.
+
 - Traffic control: htb qdiscs are used to restrict the bandwidth of the links between nodes in the network, and filtering is also performed based on specific types of traffic.
 - CPU capacity limiting is done for each host, by specifying how much percentage of the machine's CPU it shall restrict for each host in the mininet network. Mininet APIs are used to do this, although internally concepts of cgroups apply.
 - iperf and ping tests are performed to test for the bandwidth of the links, and net.runCpuLimitTest() function provided by mininet to test for CPU (which internally runs an infinite while loop to test for the resources).
