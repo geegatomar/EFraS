@@ -3,7 +3,7 @@
 
 ## Getting Started
 - Install [Mininet](http://mininet.org/download/)
-- Install [RYU controller](https://ryu.readthedocs.io/en/latest/getting_started.html)
+
 - Install dependency packages </br>
      ```
      $ sudo pip install networkx
@@ -15,16 +15,32 @@
         ```
         $ git clone https://github.com/geegatomar/Official-VNE-SDN-Major-Project.git
         ```
-    - Move/copy the ryu controller file `ryu_controller_vne.py` to the location where you installed RYU, into the directory `ryu/app/`
-    - Start the ryu controller </br>
-        ``` 
-        $ ryu-manager ryu/app/ryu_controller_vne.py 
-        ```
+        
     - Run the mininet code  </br>
+        
+        The 2 main executable files are `main.py` and `runner.py`. </br>
+          - `main.py`: Used to run one experiment at a time. It reads configurations from the `configurations.json` file. </br>
+          - `runner.py`: Used to run multiple experiments (over multiple iterations, for different number of VNRs, and for various VNE algorithms) at a time. It internally makes calls to the `main.py` depending on the configurations mentioned in `configurations.json`.
+          </br>
+        ``` 
+        $ sudo python3 vne/runner.py 
+        ```
         ``` 
         $ sudo python3 vne/main.py 
         ```
+        ``` 
+        $ sudo python3 vne/main.py -s 5 -a first-fit-algorithm -n 10
+        ```
 
+ - Optional installations: </br>
+ If you wish to use RYU controller (instead of mininet's default ovs-controller), you will have to do additional installations.
+     - Install [RYU controller](https://ryu.readthedocs.io/en/latest/getting_started.html)
+     - Move/copy the ryu controller file `ryu_controller_vne.py` to the location where you installed RYU, into the directory `ryu/app/`
+     - Start the ryu controller </br>
+        ``` 
+        $ ryu-manager ryu/app/ryu_controller_vne.py 
+        ```
+       You can modify this controller file to leverage RYU's features.
 
 
 ## Overview
