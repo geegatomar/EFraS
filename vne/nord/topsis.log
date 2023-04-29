@@ -1,0 +1,446 @@
+INFO: *** Creating network
+
+INFO: *** Adding controller
+
+INFO: *** Adding hosts:
+
+INFO: h1 
+INFO: h2 
+INFO: h3 
+INFO: h4 
+INFO: h5 
+INFO: h6 
+INFO: h7 
+INFO: h8 
+INFO: h9 
+INFO: h10 
+INFO: h11 
+INFO: h12 
+INFO: 
+*** Adding switches:
+
+INFO: s1_1 
+INFO: s1_2 
+INFO: s2_1 
+INFO: s2_2 
+INFO: s2_3 
+INFO: s2_4 
+INFO: sh1 
+INFO: sh2 
+INFO: sh3 
+INFO: sh4 
+INFO: sh5 
+INFO: sh6 
+INFO: sh7 
+INFO: sh8 
+INFO: sh9 
+INFO: sh10 
+INFO: sh11 
+INFO: sh12 
+INFO: 
+*** Adding links:
+
+INFO: (28.00Mbit) 
+INFO: (28.00Mbit) 
+INFO: (s1_1, s2_1) 
+INFO: (27.00Mbit) 
+INFO: (27.00Mbit) 
+INFO: (s1_1, s2_2) 
+INFO: (25.00Mbit) 
+INFO: (25.00Mbit) 
+INFO: (s1_1, s2_3) 
+INFO: (28.00Mbit) 
+INFO: (28.00Mbit) 
+INFO: (s1_1, s2_4) 
+INFO: (28.00Mbit) 
+INFO: (28.00Mbit) 
+INFO: (s1_2, s2_1) 
+INFO: (26.00Mbit) 
+INFO: (26.00Mbit) 
+INFO: (s1_2, s2_2) 
+INFO: (27.00Mbit) 
+INFO: (27.00Mbit) 
+INFO: (s1_2, s2_3) 
+INFO: (20.00Mbit) 
+INFO: (20.00Mbit) 
+INFO: (s1_2, s2_4) 
+INFO: (sh1, h1) 
+INFO: (12.00Mbit) 
+INFO: (12.00Mbit) 
+INFO: (sh1, s2_1) 
+INFO: (sh2, h2) 
+INFO: (12.00Mbit) 
+INFO: (12.00Mbit) 
+INFO: (sh2, s2_1) 
+INFO: (sh3, h3) 
+INFO: (17.00Mbit) 
+INFO: (17.00Mbit) 
+INFO: (sh3, s2_1) 
+INFO: (sh4, h4) 
+INFO: (19.00Mbit) 
+INFO: (19.00Mbit) 
+INFO: (sh4, s2_2) 
+INFO: (sh5, h5) 
+INFO: (10.00Mbit) 
+INFO: (10.00Mbit) 
+INFO: (sh5, s2_2) 
+INFO: (sh6, h6) 
+INFO: (15.00Mbit) 
+INFO: (15.00Mbit) 
+INFO: (sh6, s2_2) 
+INFO: (sh7, h7) 
+INFO: (14.00Mbit) 
+INFO: (14.00Mbit) 
+INFO: (sh7, s2_3) 
+INFO: (sh8, h8) 
+INFO: (15.00Mbit) 
+INFO: (15.00Mbit) 
+INFO: (sh8, s2_3) 
+INFO: (sh9, h9) 
+INFO: (13.00Mbit) 
+INFO: (13.00Mbit) 
+INFO: (sh9, s2_3) 
+INFO: (sh10, h10) 
+INFO: (14.00Mbit) 
+INFO: (14.00Mbit) 
+INFO: (sh10, s2_4) 
+INFO: (sh11, h11) 
+INFO: (12.00Mbit) 
+INFO: (12.00Mbit) 
+INFO: (sh11, s2_4) 
+INFO: (sh12, h12) 
+INFO: (19.00Mbit) 
+INFO: (19.00Mbit) 
+INFO: (sh12, s2_4) 
+INFO: 
+
+INFO: *** Configuring hosts
+
+INFO: h1 
+INFO: (cfs 29965/100000us) 
+INFO: h2 
+INFO: (cfs 34506/100000us) 
+INFO: h3 
+INFO: (cfs 29057/100000us) 
+INFO: h4 
+INFO: (cfs 27241/100000us) 
+INFO: h5 
+INFO: (cfs 30419/100000us) 
+INFO: h6 
+INFO: (cfs 30419/100000us) 
+INFO: h7 
+INFO: (cfs 28149/100000us) 
+INFO: h8 
+INFO: (cfs 29511/100000us) 
+INFO: h9 
+INFO: (cfs 34506/100000us) 
+INFO: h10 
+INFO: (cfs 22701/100000us) 
+INFO: h11 
+INFO: (cfs 24971/100000us) 
+INFO: h12 
+INFO: (cfs 24517/100000us) 
+INFO: 
+
+INFO: *** Starting controller
+
+INFO: c0 
+INFO: 
+
+INFO: *** Starting 18 switches
+
+INFO: s1_1 
+INFO: s1_2 
+INFO: s2_1 
+INFO: s2_2 
+INFO: s2_3 
+INFO: s2_4 
+INFO: sh1 
+INFO: sh2 
+INFO: sh3 
+INFO: sh4 
+INFO: sh5 
+INFO: sh6 
+INFO: sh7 
+INFO: sh8 
+INFO: sh9 
+INFO: sh10 
+INFO: sh11 
+INFO: sh12 
+INFO: ...
+INFO: (28.00Mbit) 
+INFO: (27.00Mbit) 
+INFO: (25.00Mbit) 
+INFO: (28.00Mbit) 
+INFO: (28.00Mbit) 
+INFO: (26.00Mbit) 
+INFO: (27.00Mbit) 
+INFO: (20.00Mbit) 
+INFO: (28.00Mbit) 
+INFO: (28.00Mbit) 
+INFO: (12.00Mbit) 
+INFO: (12.00Mbit) 
+INFO: (17.00Mbit) 
+INFO: (27.00Mbit) 
+INFO: (26.00Mbit) 
+INFO: (19.00Mbit) 
+INFO: (10.00Mbit) 
+INFO: (15.00Mbit) 
+INFO: (25.00Mbit) 
+INFO: (27.00Mbit) 
+INFO: (14.00Mbit) 
+INFO: (15.00Mbit) 
+INFO: (13.00Mbit) 
+INFO: (28.00Mbit) 
+INFO: (20.00Mbit) 
+INFO: (14.00Mbit) 
+INFO: (12.00Mbit) 
+INFO: (19.00Mbit) 
+INFO: (12.00Mbit) 
+INFO: (12.00Mbit) 
+INFO: (17.00Mbit) 
+INFO: (19.00Mbit) 
+INFO: (10.00Mbit) 
+INFO: (15.00Mbit) 
+INFO: (14.00Mbit) 
+INFO: (15.00Mbit) 
+INFO: (13.00Mbit) 
+INFO: (14.00Mbit) 
+INFO: (12.00Mbit) 
+INFO: (19.00Mbit) 
+INFO: 
+
+INFO: 		 NORD The Weight_mx is sum_crb, sum_bdwth, sum_bc, sum_eig, sum_dgr [0.19644670982686693, 0.19641742661235284, 0.21425308032217635, 0.19644139161930196, 0.19644139161930196]%
+INFO: Rank generation value for nodes 
+	{0: 0.6194170822819348, 1: 0.795141993704848, 2: 0.578079149019637, 3: 0.4991151399530267, 4: 0.43535800100998057, 5: 0.6617515497251765, 6: 0.6176010478729378, 7: 0.6759519087547929, 8: 0.9263622436687234, 9: 0.3835453866051523, 10: 0.3563084342899128, 11: 0.409530932462263}
+INFO: Rank generated for nodes (Node	Rank) 
+	{8: 1, 1: 2, 7: 3, 5: 4, 0: 5, 6: 6, 2: 7, 3: 8, 4: 9, 11: 10, 9: 11, 10: 12}
+INFO: 		 NORD The Weight_mx is sum_crb, sum_bdwth, sum_bc, sum_eig, sum_dgr [0.18634977429009775, 0.18964838746977747, 0.24833340347860108, 0.1878342173807618, 0.1878342173807618]%
+INFO: Rank generation value for nodes 
+	{0: 0.16003562541774666, 1: 0.14557830665402036, 2: 1.0, 3: 0.027965958975195385}
+INFO: Rank generated for nodes (Node	Rank) 
+	{2: 1, 0: 2, 1: 3, 3: 4}
+INFO: h1 
+INFO: (cfs 29965/100000us) 
+INFO: h2 
+INFO: (cfs 34506/100000us) 
+INFO: h3 
+INFO: (cfs 29057/100000us) 
+INFO: h4 
+INFO: (cfs 27241/100000us) 
+INFO: h5 
+INFO: (cfs 30419/100000us) 
+INFO: h6 
+INFO: (cfs 30419/100000us) 
+INFO: h7 
+INFO: (cfs 28149/100000us) 
+INFO: h8 
+INFO: (cfs 29511/100000us) 
+INFO: h9 
+INFO: (cfs 34506/100000us) 
+INFO: h10 
+INFO: (cfs 22701/100000us) 
+INFO: h11 
+INFO: (cfs 24971/100000us) 
+INFO: h12 
+INFO: (cfs 24517/100000us) 
+INFO: vnr1_vh1 
+INFO: (cfs 6356/100000us) 
+INFO: 
+
+INFO: h1 
+INFO: (cfs 29965/100000us) 
+INFO: h2 
+INFO: (cfs 34506/100000us) 
+INFO: h3 
+INFO: (cfs 29057/100000us) 
+INFO: h4 
+INFO: (cfs 27241/100000us) 
+INFO: h5 
+INFO: (cfs 30419/100000us) 
+INFO: h6 
+INFO: (cfs 30419/100000us) 
+INFO: h7 
+INFO: (cfs 28149/100000us) 
+INFO: h8 
+INFO: (cfs 29511/100000us) 
+INFO: h9 
+INFO: (cfs 34506/100000us) 
+INFO: h10 
+INFO: (cfs 22701/100000us) 
+INFO: h11 
+INFO: (cfs 24971/100000us) 
+INFO: h12 
+INFO: (cfs 24517/100000us) 
+INFO: vnr1_vh1 
+INFO: (cfs 6356/100000us) 
+INFO: vnr1_vh2 
+INFO: (cfs 5902/100000us) 
+INFO: 
+
+INFO: h1 
+INFO: (cfs 29965/100000us) 
+INFO: h2 
+INFO: (cfs 34506/100000us) 
+INFO: h3 
+INFO: (cfs 29057/100000us) 
+INFO: h4 
+INFO: (cfs 27241/100000us) 
+INFO: h5 
+INFO: (cfs 30419/100000us) 
+INFO: h6 
+INFO: (cfs 30419/100000us) 
+INFO: h7 
+INFO: (cfs 28149/100000us) 
+INFO: h8 
+INFO: (cfs 29511/100000us) 
+INFO: h9 
+INFO: (cfs 34506/100000us) 
+INFO: h10 
+INFO: (cfs 22701/100000us) 
+INFO: h11 
+INFO: (cfs 24971/100000us) 
+INFO: h12 
+INFO: (cfs 24517/100000us) 
+INFO: vnr1_vh1 
+INFO: (cfs 6356/100000us) 
+INFO: vnr1_vh2 
+INFO: (cfs 5902/100000us) 
+INFO: vnr1_vh3 
+INFO: (cfs 5448/100000us) 
+INFO: 
+
+INFO: h1 
+INFO: (cfs 29965/100000us) 
+INFO: h2 
+INFO: (cfs 34506/100000us) 
+INFO: h3 
+INFO: (cfs 29057/100000us) 
+INFO: h4 
+INFO: (cfs 27241/100000us) 
+INFO: h5 
+INFO: (cfs 30419/100000us) 
+INFO: h6 
+INFO: (cfs 30419/100000us) 
+INFO: h7 
+INFO: (cfs 28149/100000us) 
+INFO: h8 
+INFO: (cfs 29511/100000us) 
+INFO: h9 
+INFO: (cfs 34506/100000us) 
+INFO: h10 
+INFO: (cfs 22701/100000us) 
+INFO: h11 
+INFO: (cfs 24971/100000us) 
+INFO: h12 
+INFO: (cfs 24517/100000us) 
+INFO: vnr1_vh1 
+INFO: (cfs 6356/100000us) 
+INFO: vnr1_vh2 
+INFO: (cfs 5902/100000us) 
+INFO: vnr1_vh3 
+INFO: (cfs 5448/100000us) 
+INFO: vnr1_vh4 
+INFO: (cfs 6356/100000us) 
+INFO: 
+
+INFO: (cfs 29965/100000us) 
+INFO: (cfs 28603/100000us) 
+INFO: (cfs 29057/100000us) 
+INFO: (cfs 27241/100000us) 
+INFO: (cfs 30419/100000us) 
+INFO: (cfs 24063/100000us) 
+INFO: (cfs 28149/100000us) 
+INFO: (cfs 24063/100000us) 
+INFO: (cfs 28149/100000us) 
+INFO: (cfs 22701/100000us) 
+INFO: (cfs 24971/100000us) 
+INFO: (cfs 24517/100000us) 
+INFO: *** Stopping 1 controllers
+
+INFO: c0 
+INFO: 
+
+INFO: *** Stopping 36 links
+
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: .
+INFO: 
+
+INFO: *** Stopping 18 switches
+
+INFO: s1_1 
+INFO: s1_2 
+INFO: s2_1 
+INFO: s2_2 
+INFO: s2_3 
+INFO: s2_4 
+INFO: sh1 
+INFO: sh2 
+INFO: sh3 
+INFO: sh4 
+INFO: sh5 
+INFO: sh6 
+INFO: sh7 
+INFO: sh8 
+INFO: sh9 
+INFO: sh10 
+INFO: sh11 
+INFO: sh12 
+INFO: 
+
+INFO: *** Stopping 16 hosts
+
+INFO: h1 
+INFO: h2 
+INFO: h3 
+INFO: h4 
+INFO: h5 
+INFO: h6 
+INFO: h7 
+INFO: h8 
+INFO: h9 
+INFO: h10 
+INFO: h11 
+INFO: h12 
+INFO: vnr1_vh1 
+INFO: vnr1_vh2 
+INFO: vnr1_vh3 
+INFO: vnr1_vh4 
+INFO: 
+*** Done
+

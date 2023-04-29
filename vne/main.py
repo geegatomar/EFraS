@@ -112,10 +112,14 @@ def runVNE(sl_factor=2, ll_factor=3, hl_factor=5):
         min_bw=cfg_vnrs["min_bw"],
         max_bw=cfg_vnrs["max_bw"])
 
-    total_num_vnrs = len(inputs_for_vnr_mapping_algo)
+    # Order/rank VNRs before trying to serve them.
+    vnr_list_ordered = hp.rank_vnrs_in_order(
+        inputs_for_vnr_mapping_algo)
+
+    total_num_vnrs = len(vnr_list_ordered)
     num_vnrs_mapped = 0
-    # Looping through each VNR, trying to serve/satisfy each VNR at a time
-    for i, (num_hosts, cpu_reqs, link_reqs) in enumerate(inputs_for_vnr_mapping_algo):
+    # Looping through each VNR, trying to serve/satisfy each VNR at a time.
+    for i, (num_hosts, cpu_reqs, link_reqs) in enumerate(vnr_list_ordered):
         cpu_reqs_for_vnr_mapping, bw_reqs_for_vnr_mapping = vne_algorithms.vne_algorithm(
             num_hosts, cpu_reqs, link_reqs)
         op.output_dict["total_request"] += 1

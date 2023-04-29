@@ -136,3 +136,70 @@ def create_vnrs(num_vnrs=5, min_nodes=2, max_nodes=6, probability=0.4, min_cpu=1
         vnrs.append((num_nodes, cpu_reqs, link_reqs))
         print("VNR {}: {}".format(req, (num_nodes, cpu_reqs, link_reqs)))
     return vnrs
+
+
+def rank_vnrs_in_order(vnr_list):
+    """ Orders/ranks VNRs in the VNR list to decide which VNR to serve before others.
+    Currently we are ranking them based on the ascending order of revenue generated
+    from them, but the flexibility to add other strategies of ranking can be plugged in here."""
+    return _rank_vnrs_in_ascending_order_of_revenue(vnr_list)
+
+
+def _rank_vnrs_in_ascending_order_of_revenue(vnr_list):
+    """ Orders/ranks VNRs in ascending order of their revenue. Revenue of a VNR is 
+    computed by summing the node weights (i.e. CRB requirements of all virtual host) and 
+    the edge weights (i.e. bandwidth requirement of all the links in the VNR)"""
+    def _get_node_weights(vnr):
+        (_, cpu_reqs, _) = vnr
+        return sum(cpu_reqs)
+
+    def _get_edge_weights(vnr):
+        (_, _, link_reqs) = vnr
+        edge_weights = 0
+        for (_, _, wt) in link_reqs:
+            edge_weights += wt
+        return edge_weights
+
+    def _get_revenue(vnr):
+        return _get_node_weights(vnr) + _get_edge_weights(vnr)
+
+    vnr_list.sort(key=lambda vnr: _get_revenue(vnr))
+    print("\n\nAfter ordering/ranking VNRs by ascending order of revenue...")
+    for vnr in vnr_list:
+        print(vnr)
+    return vnr_list
+
+
+def get_bandwidth_limit_between_host_pair(host_pair, COPY_SWITCH_PAIR_x_BW):
+    """ Gets the bandwidth limit between given pair of hosts.
+    Between any pair of hosts, there are multiple hops of switches that any packet goes 
+    through if it wants to travel from one host to the other. The bandwidth between the
+    pair of hosts is the minimum of all the bandwidths of the links encountered in
+    that path.
+
+    host_pair: (Host, Host)
+        The pair of hosts between bandwidth limit is supposed to be found.
+    """
+    # First rearrange the host_pair such that the smaller host value comes first, because
+    # we have stored values in COPY_SWITCH_PAIR_x_BW in such a way only.
+    (h1, h2) = host_pair
+    if int(h1.name[1:]) > int(h2.name[1:]):
+        host_pair = (h2, h1)
+
+    bw_limits = []
+
+    # The bandwidth limit between given host pair is the minimum of the bandwidths between
+    # every link on the path between the two hosts.
+    path = gbl.PATH_BETWEEN_HOSTS[host_pair]
+    # Start with assigning max possible value
+    bw_limit = 10000000
+    for each_link in path:
+        # Find that switch pair in the COPY_SWITCH_PAIR_x_BW dict.
+        for (s1_name, s2_name), bw in COPY_SWITCH_PAIR_x_BW.items():
+            if each_link[0].name == s1_name and each_link[1].name == s2_name:
+                bw_limit = min(bw_limit, bw)
+                bw_limits.append(bw)
+                break
+    # print("Bandwidth values on path between hosts {} & {}: {}".format(
+    #     h1.name, h2.name, bw_limits))
+    return bw_limit

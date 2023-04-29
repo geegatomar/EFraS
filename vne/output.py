@@ -74,7 +74,10 @@ def get_avg_bandwidth_utilization():
                 orig_bw - bw_after_mappings) / (orig_bw)
             bandwidth_utilization_of_used_links.append(
                 bandwidth_utilization_of_this_link)
-    return mean(bandwidth_utilization_of_used_links)
+    try:
+        return mean(bandwidth_utilization_of_used_links)
+    except:
+        return None
 
 
 def get_avg_crb_utilization():
@@ -85,7 +88,10 @@ def get_avg_crb_utilization():
             crb_utilization_of_this_host = (
                 substrate_host.original_cpu_limit - substrate_host.cpu_limit) / substrate_host.original_cpu_limit
             crb_utilization_of_used_hosts.append(crb_utilization_of_this_host)
-    return mean(crb_utilization_of_used_hosts)
+    try:
+        return mean(crb_utilization_of_used_hosts)
+    except:
+        return None
 
 
 def compute_remaining_output_parameters():
