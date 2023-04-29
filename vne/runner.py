@@ -117,7 +117,6 @@ def main():
     excel.to_excel("Results.xlsx")
 
     try:
-        print("Deleting output_dict.pickle...")
         # Delete the intermediary pickle file after the Results.xlsx has been generated.
         os.remove("output_dict.pickle")
     except:

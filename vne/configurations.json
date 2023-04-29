@@ -32,9 +32,12 @@
 
     "Xvne_algorithm": "worst-fit-algorithm",
     "XXvne_algorithm": "first-fit-algorithm",
-    "vne_algorithm": "nord-algorithm",
+    "Zvne_algorithm": "nord-algorithm",
+    "Qvne_algorithm": "nrm-algorithm",
+    "vne_algorithm": "ahp-algorithm",
 
-    "iterations": 1,
-    "vne_algorithms": ["first-fit-algorithm", "worst-fit-algorithm", "nord-algorithm"],
-    "num_vnrs_list": [1]
+
+    "iterations": 2,
+    "vne_algorithms": ["first-fit-algorithm", "worst-fit-algorithm", "nord-algorithm", "nrm-algorithm", "ahp-algorithm"],
+    "num_vnrs_list": [5, 10]
 }

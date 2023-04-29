@@ -4,7 +4,8 @@ import copy
 import output as op
 import vnr_mapping
 from nord import nord_support
-
+from nrm import nrm_support
+from ahp import ahp_support
 
 # VNE ALGORTHM FUNCTIONS
 
@@ -16,6 +17,7 @@ from nord import nord_support
 # It shall then generate the list of `ranked virtual hosts` and list of `ranked substrate
 # hosts`, and then call the `_greedy_vne_embedding` function passing those ranked
 # host lists as input.
+
 
 def _first_fit_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
     """ First fit algorithm which ranks virtual hosts in the order they are given, and also
@@ -40,6 +42,20 @@ def _nord_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
     """ NORD algorithm follows a topsis ranking strategy which handles the ranking for both the
     substrate hosts and virtual hosts. """
     ranked_virtual_hosts, ranked_substrate_hosts = nord_support.get_ranked_hosts(
+        num_hosts, cpu_reqs, link_bw_reqs)
+    return _greedy_vne_embedding(num_hosts, cpu_reqs, link_bw_reqs, ranked_virtual_hosts, ranked_substrate_hosts)
+
+
+def _nrm_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
+    """ NRM algorithm handles the ranking for both the substrate hosts and virtual hosts. """
+    ranked_virtual_hosts, ranked_substrate_hosts = nrm_support.get_ranked_hosts(
+        num_hosts, cpu_reqs, link_bw_reqs)
+    return _greedy_vne_embedding(num_hosts, cpu_reqs, link_bw_reqs, ranked_virtual_hosts, ranked_substrate_hosts)
+
+
+def _ahp_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
+    """ AHP algorithm handles the ranking for both the substrate hosts and virtual hosts. """
+    ranked_virtual_hosts, ranked_substrate_hosts = ahp_support.get_ranked_hosts(
         num_hosts, cpu_reqs, link_bw_reqs)
     return _greedy_vne_embedding(num_hosts, cpu_reqs, link_bw_reqs, ranked_virtual_hosts, ranked_substrate_hosts)
 
@@ -175,3 +191,7 @@ def vne_algorithm(num_hosts, cpu_reqs, link_bw_reqs):
         return _first_fit_algorithm(num_hosts, cpu_reqs, link_bw_reqs)
     if gbl.CFG["vne_algorithm"] == "nord-algorithm":
         return _nord_algorithm(num_hosts, cpu_reqs, link_bw_reqs)
+    if gbl.CFG["vne_algorithm"] == "nrm-algorithm":
+        return _nrm_algorithm(num_hosts, cpu_reqs, link_bw_reqs)
+    if gbl.CFG["vne_algorithm"] == "ahp-algorithm":
+        return _ahp_algorithm(num_hosts, cpu_reqs, link_bw_reqs)
