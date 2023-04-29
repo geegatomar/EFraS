@@ -44,7 +44,11 @@ def generate_topology(sl_factor, ll_factor, hl_factor):
     ll_factor: Number of leaf layer (ll) switches under the subnet of each spine switch.
     hl_factor: Number of host layer (hl) hosts under (connected to) each leaf switch. """
 
-    random.seed(gbl.SEED)
+    # If your requirement is to generate the same physical substrate network over
+    # multiple iterations, then keep the random.seed value same for each of the iterations.
+    # But if you want to generate new substrate network each time, replace the below line
+    # with: `random.seed(gbl.SEED)``
+    random.seed(gbl.CFG["seed_for_substrate_network"])
 
     # Starting IP addressing of hosts with "10.0.0.0"
     first_ip_subnet = 10
@@ -103,7 +107,11 @@ class SpineLeafSubstrateNetwork(Topo):
     def __init__(self):
         Topo.__init__(self)
 
-        random.seed(gbl.SEED)
+        # If your requirement is to generate the same physical substrate network over
+        # multiple iterations, then keep the random.seed value same for each of the iterations.
+        # But if you want to generate new substrate network each time, replace the below line
+        # with: `random.seed(gbl.SEED)``
+        random.seed(gbl.CFG["seed_for_substrate_network"])
 
         # Add spine switches (layer 1 switches in spine-leaf topology), named s2_XYZ.
         for spine_switch in gbl.SPINE_SWITCHES:

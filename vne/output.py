@@ -75,7 +75,7 @@ def get_avg_bandwidth_utilization():
             bandwidth_utilization_of_used_links.append(
                 bandwidth_utilization_of_this_link)
     try:
-        return mean(bandwidth_utilization_of_used_links)
+        return mean(bandwidth_utilization_of_used_links) * 100
     except:
         return None
 
@@ -89,7 +89,7 @@ def get_avg_crb_utilization():
                 substrate_host.original_cpu_limit - substrate_host.cpu_limit) / substrate_host.original_cpu_limit
             crb_utilization_of_used_hosts.append(crb_utilization_of_this_host)
     try:
-        return mean(crb_utilization_of_used_hosts)
+        return mean(crb_utilization_of_used_hosts) * 100
     except:
         return None
 
@@ -98,13 +98,13 @@ def compute_remaining_output_parameters():
     # Some of the parameters of `output_dict` are directly populated from code.
     # And others such as 'ratios' are computed here.
     try:
-        output_dict["embeddingratio"] = output_dict["accepted"] / \
-            output_dict["total_request"]
+        output_dict["embeddingratio"] = (
+            output_dict["accepted"] / output_dict["total_request"]) * 100
     except:
         output_dict["embeddingratio"] = None
     try:
-        output_dict["revenuetocostratio"] = output_dict["revenue"] / \
-            output_dict["total_cost"]
+        output_dict["revenuetocostratio"] = (
+            output_dict["revenue"] / output_dict["total_cost"]) * 100
     except:
         output_dict["revenuetocostratio"] = None
     output_dict["consumed"] = output_dict["total_cost"]
@@ -115,13 +115,13 @@ def compute_remaining_output_parameters():
     output_dict["No_of_Nodes_used"] = len(SUBSTRATE_HOSTS_USED)
 
     try:
-        output_dict["avg_link_utilization"] = output_dict["No_of_Links_used"] / \
-            output_dict["total_links"]
+        output_dict["avg_link_utilization"] = (
+            output_dict["No_of_Links_used"] / output_dict["total_links"]) * 100
     except:
         output_dict["avg_link_utilization"] = None
     try:
-        output_dict["avg_node_utilization"] = output_dict["No_of_Nodes_used"] / \
-            output_dict["total_nodes"]
+        output_dict["avg_node_utilization"] = (
+            output_dict["No_of_Nodes_used"] / output_dict["total_nodes"]) * 100
     except:
         output_dict["avg_node_utilization"] = None
 
