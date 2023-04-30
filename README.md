@@ -258,7 +258,7 @@ All the configurations with respect to generation of substrate network (number o
 
 ### runner.py
 The [main.py](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/vne/main.py) allows us to run one experiment at a time (based on the specified configurations). We extended this functionality to run multiple experiments over multiple iterations, for different number of VNRs and using different VNE algorithms at a time using the [runner.py](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/vne/runner.py) file. 
-Note that to run this file, you must make sure to specify all the configurations in the `configurations.json` file; especially these 3 configurations which are specific to this file (which main.py doesn't look at):
+Note that to run this file, you must make sure to specify all the configurations in the [configurations.json](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/vne/configurations.json) file; especially these 3 configurations which are specific to this file (which main.py doesn't look at):
 ```
 Number of iterations to run for:   "iterations": 5,
 List of VNE algorithms to run on:  "vne_algorithms": ["first-fit-algorithm", "worst-fit-algorithm", "nord-algorithm"],
