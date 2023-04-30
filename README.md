@@ -44,13 +44,25 @@
 
 
 ## Overview
-This project uses mininet to emulate a network topology for the Virtual Network Embedding (VNE) problem. Mininet provides a virtual test bed and development environment for software-defined networks (SDN).
-- The switches used in the mininet topology are Open vSwitches, and hence can be configured using the Open Flow protocol. The configuration of OVSSwitches can be done using the ovs-vsctl, ovs-ofctl commands, or collectively via an SDN controller (such as RYU controller). In our project we use  ovs-controller and use ovs-vsctl and ovs-ofctl commands for populating switch-specific entries. And also provide easy integration with the RYU controller, allowing users to benefit from the flexibility of a more powerful controller whilst still being able to use it with our emulator.
+The VNE emulator has the following main components:
 
-- Traffic control: htb qdiscs are used to restrict the bandwidth of the links between nodes in the network, and filtering is also performed based on specific types of traffic.
-- CPU capacity limiting is done for each host, by specifying how much percentage of the machine's CPU it shall restrict for each host in the mininet network. Mininet APIs are used to do this, although internally concepts of cgroups apply.
-- iperf and ping tests are performed to test for the bandwidth of the links, and net.runCpuLimitTest() function provided by mininet to test for CPU (which internally runs an infinite while loop to test for the resources).
-To run the code; there is one mininet (.py) file which needs to be run with mininet. The other simple ryu controller file must be running to ensure that the ryu controller is up and running on port 6553.
+
+
+- **Generate substrate network**: The substrate network is generated using *Mininet* which provides a virtual test bed and development environment for software-defined networks (SDN). It creates the substrate network following a spine-leaf topology, and does the IP addressing of all substrate hosts in the network. Flow table entries of all Openflow switches is also populated, thus establishing a deterministic path between every pair of hosts in the substrate network.
+
+- **Generate VNRs**: Set/pool of VNRs is generated. The CPU and link bandwidth requirement limits can be specified in the configurations file, along with other parameters such as number of VNRs to generate. The list of VNRs can also be ranked/ordered before trying to serve/map them onto the substrate network.
+
+- **VNE Algorithm**: Once the substrate network is ready, and you have the list of VNRs to serve, the VNE algorithms module loops over the list of VNRs trying to serve/map them one at a time. It currently supports multiple VNE algorithms such as first-fit, worst-fit, NORD, NRM, and AHP; and we have made it very easy to plug-in and integrate any other algorithm as well. The VNE algorithm *selects* the substrate resources (i.e. substrate hosts and links) for serving/mapping the given VNR, and passes the *selected substrate resources for mapping* to the next VNR mapping module.
+
+- **VNR Mapping**: The actual mapping of VNR onto substrate network happens here. Internally this module handles IP addressing of the virtual hosts of VNR, flow table updations to support routing packets to virtual hosts, VLAN for isolation between VNRs, traffic control to restrict bandwidth of a virtual link mapped onto a substrate link, etc.
+
+- **Tests**: For testing the emulator setup, and to test if each VNR is getting the allocated resource, we use network performance tools such as *iperf* for performing bandwidth tests. Reachability tests are performed using *ping*, where every virtual host shall be reachable to every other virtual host within the same VNR, but not reachable to any other host. CPU limit tests are also performed here to complete end-to-end testing of the VNE emulator.
+
+</br>
+</br>
+<img src="https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/emulator_architecture_diagram.png?raw=true" width="80%">
+</br>
+
 
 
 ## Project Modules
@@ -60,8 +72,8 @@ The project work is broadly divided into the following parts:
 2. IP addressing of nodes
 3. Flow table entry population of OVSwitch
 ### Mapping VNRs on substrate network
-1. VNR algorithm to select which substrate host to map the virtual host onto
-2. The actual mapping logic; IP addressing of virtual hosts, VLAN isolation, updating flow table entries, etc.
+1. VNE algorithm to *select* which substrate host to map the virtual host onto
+2. The actual VNR *mapping* logic; IP addressing of virtual hosts, VLAN isolation, updating flow table entries, etc.
 ### Testing
 1. Pings for connectivity within VNR hosts
 2. Iperf for bandwidth links
