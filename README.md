@@ -209,7 +209,7 @@ Note that the IP addressing of these virtual hosts is done as per the logic expl
 </br>
 
 ## VLAN Isolation
-Once the IP addressing of virtual hosts was figured out, the connectivity amongst every pair of host (all substrate and virtual hosts) is inherently present because of how the flow table entries were initially populated. This meant that a host of one VNR is able to communicate with a host of another VNR; and this behavior is undesirable. This is why we added VLAN logic to provide isolation between VNRs, i.e. hosts of one VNR shall be able to communicate with each other, but not communicate with any other host on the network. 
+Once the IP addressing of virtual hosts was figured out, the connectivity amongst every pair of host (all substrate and virtual hosts) is inherently present because of how the flow table entries were initially populated. This meant that a host of one VNR is able to communicate with a host of another VNR; and this behavior is undesirable. This is why we added ***VLAN*** logic to provide ***isolation between VNRs***, i.e. hosts of one VNR shall be able to communicate with each other, but not communicate with any other host on the network. 
 
 Virtual LAN (VLAN) is used to logically partition a network. For implementing this, VLAN IDs have been used (where every VNR is given a new VLAN ID), and additional entries were added to the flow tables of the switches to confirm isolation between different VLANs.
 Further implementation details can be found here: https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/00400218b6b6a36851f6ec02ecd18bf090155340/vne/vnr_mapping.py#L122
@@ -253,11 +253,10 @@ In this example, mapping was found for 3 out of the 4 VNRs.
 
 # Additional Information
 
-## Why RYU Controller?
-Since the paths between every pair of host in our network is deterministic, the population of flow tables must be done at the beginning of network establishment itself. The logic for which is dependant on which type of switch it is (spine, leaf, or host layer switch), and is very specific to each switch, as can be seen in implementation here:
+### configurations.json
 
-https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/5812f005daafef1e5eb86099ccd546e45c9a7c48/vne/substrate.py#L148
+### runners.py
 
-Hence, it made sense to write code for this 'not-so-generalizable' logic in python mininet code itself, instead of putting it in a separate RYU controller. The controller is good at adding flow table entries for more generalizable (i.e. common for all switches) such as ARP flooding.
+### Results.xlsx
 
-The RYU controller can easily be eliminated if those ARP flooding logic is incorporated in the python mininet code itself. It just made logical sense to populate it via a controller since it's common for all switches, irrespective of which type of switchit is (spine, leaf, or host layer switch).
+### Why deterministic path is fixed at the beginning?
