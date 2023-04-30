@@ -254,9 +254,40 @@ In this example, mapping was found for 3 out of the 4 VNRs.
 # Additional Information
 
 ### configurations.json
+All the configurations with respect to generation of substrate network (number of hosts in substrate network, CPU limits for hosts, bandwidth limits for links of substrate network, etc.), generation of VNRs (number of VNRs, cpu & bandwidth requirements of VNRs, etc.), which VNE algorithm to use, etc. can all be specified in this [configurations.json](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/vne/configurations.json) file. When you execute the command `sudo python3 main.py` file to run the code, it will read from this configuration file.
 
-### runners.py
+### runner.py
+The `main.py` allows us to run one experiment at a time (based on the specified configurations). We extended this functionality to run multiple experiments over multiple iterations, for different number of VNRs and using different VNE algorithms at a time using the `runner.py` file. 
+Note that to run this file, you must make sure to specify all the configurations in the `configurations.json` file; especially these 3 configurations which are specific to this file (which main.py doesn't look at):
+```
+Number of iterations to run for:   "iterations": 5,
+List of VNE algorithms to run on:  "vne_algorithms": ["first-fit-algorithm", "worst-fit-algorithm", "nord-algorithm"],
+List of number of VNRs to run for: "num_vnrs_list": [25, 50, 100]
+```
 
 ### Results.xlsx
+The results from multiple experiments run in `runner.py` are captured in this excel file. The major columns captured are as follows:
+- **seed**: The seed value used for pseudo-random generation of the network topology and VNRs.
+- **algorithm**: The algorithm used for virtual network embedding.
+- **revenue**: Sum of all demanded resources (cpu & bw) of VNRs.
+- **total_cost**: Sum of all spent resources (cpu & bw) for embedding VNRs.
+- **revenuetocostratio**: Ratio of revenue / total_cost.
+- **accepted**: Number of accepted VNR requests.
+- **total_request**: Total number of VNR requests.
+- **embeddingratio**: Ratio of accepted / total_request.
+- **pre_resource**: Pre-resource is the sum of all resources (cpu & bw) before embedding.
+- **post_resource**: Post-resource is the sum of all resources (cpu & bw) after embedding.
+- **consumed**: Consumed resources = post_resource - pre_resource.
+- **No_of_Links_used**: Number of substrate links onto which any vnr's links are mapped, i.e. number of substrate links used for any mapping.
+- **No_of_Nodes_used**: Number of substrate nodes onto which any vnr's hosts are mapped, i.e. number of substrate nodes used for any mapping.
+- **total_nodes**: Total number of hosts in the substrate network.
+- **total_links**: Total number of links in the substrate network.
+- **total_execution_time**: Total execution time (in seconds) to execute the entire VNE embedding code for this single experiment.
+- **avg_bandwidth_utilization**: Average Bandwidth Utilization is defined as the average bandwidth utilization of the used links in the substrate network. It can be calculated by first calculating the bandwidth utilization of each link that is being used, and next taking the average of all these values.
+- **avg_crb_utilization**: Similar to average bandwidth utilization, average CRB utilization is defined as the average CRB utilization of used nodes in the substrate network. This can be calculated by first calculating the CRB utilization of each node that is being used, and next taking the average of all these values.
+- **avg_link_utilization**: Average link utilization is defined as the total number of substrate links utilized during the embedding of the VNRs divided by the total number of links in the substrate network.
+- **avg_node_utilization**: Average node utilization is defined as the total number of substrate nodes utilized during the embedding of the VNRs divided by the total number of nodes in the substrate network.
 
 ### Why deterministic path is fixed at the beginning?
+As mentioned previously, we have *deterministic* paths between every pair of hosts in the substrate network, and that's why the flow entries for these paths are populated in the flow tables of the OF switches at the beginning itself. This means that essentially we only need to solve the problem of 'node embedding', since 'link embedding' problem doesn't exist in our scenario (since the path is fixed between every pair of host).
+The reason for making path between every host pair deterministic is that, if suppose we had not made the paths deterministic, then there would be multiple paths (say 3 paths) between two hosts. And suppose that the link embedding selected a particular path P1 between the two substrate hosts h1 and h2, when it mapped vh1 and vh2 onto the respective substrate hosts. Resources were allocated for this VNR's virtual links on the substrate network on path P1. Later, when we would run iperf to test if the VNR is getting the bandwidth it requested, if the path is not determinisitc, then at that moment the router (which would run some dynamic routing protocol) might select a different path P2. This cuases an issue because we had allocated/saved resources for this VNR on path P1, but while testing it chose path P2 and hence causing bandwidth tests to fail. That's why we went ahead with static routing to establish single deterministic path between every pair of hosts, so that the path selected while mapping the VNR, and the path selected while finally testing the VNR's bandwidth performance shall remain the same.
