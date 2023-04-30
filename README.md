@@ -84,9 +84,12 @@ The project work is broadly divided into the following parts:
 # Substrate Network
 
 ## Spine-Leaf Topology
-Spine-Leaf Architecture is a two-layer, full-mesh topology composed of a leaf layer and a spine layer, with the leaf and spine switches. </br>
-![spine-and-leaf-architecture](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/spine-and-leaf-architecture.jpg?raw=true)
+Spine-Leaf Architecture is a two-layer, full-mesh topology composed of a leaf layer and a spine layer, with the leaf and spine switches. 
+
 </br>
+<img src="https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/spine-and-leaf-architecture-2.jpg?raw=true" width="75%">
+</br>
+
 The substrate network (i.e. physical network onto which Virtual Network Requests will be mapped) in our project follows a spine-leaf architecture, which is a common convention followed by modern day data centres. Although we have added an additional layer of switches, called the 'host switch layer' for each host. This is mainly for simplifying the implementation of virtual hosts' mapping; more on why we did this is in the sections below.
 
 </br>
@@ -116,34 +119,42 @@ The only modification in the above diagram is the addition of 'host layer switch
 </br>
 
 ## Flow table entry population
-Since we want the path taken by any packet from one host to another host to be a *deterministic path*, we populate the flow table entries of every switch accordingly.
+Since we want the path taken by any packet from one host to another host to be a *deterministic path*, we populate the flow table entries of every switch accordingly. The logic for population of flow entries for each set of switches (i.e. spine layer switches, leaf layer switches and host layer switches) is different because of the position of the switches in the network, and hence we discuss them separately as follows:
 
-- For spine layer switches: For every packet that the spine switch gets, it sends it out downwards towards the leaf layer switch depending on the destination IP address of the packet. For example, if (in the above image), the switch s1_2 gets a packet destined for host h11 (having IP address '12.1.0.0'), then it will send the packet to switch s2_6 (having subnet '12.1.0.0/16') because the host h11 comes under the subnet of s2_6.
+- **For spine layer switches**: For every packet that the spine switch gets, it sends it out downwards towards the leaf layer switch depending on the destination IP address of the packet. For example, if (in the above image), the switch s1_2 gets a packet destined for host h11 (having IP address '12.1.0.0'), then it will send the packet to switch s2_6 (having subnet '12.1.0.0/16') because the host h11 comes under the subnet of s2_6.
 
-- For leaf layer switches: For every packet that the leaf switch gets, there could be 2 situations; either the packet shall travel upwards towards the spine layer switches, or downwards towards the host layer switches. 
-    - Towards spine layer switches (upwards): We consider the larger of the src and dst subnets to find the spine layer switch to forward the packet. Reason for doing this (and not just basing the decision off of destination address) is because if we decide the spine layer switch only based on the destination address, then the request & reply packets will not follow the same route. For example, in the topology (sl=3, ll=2, hl=2), if h1 (10.0.0.0) wants to communicate with h6 (11.0.1.0), it will communicate via the switch s1_2 (because dst_ip is under 11 subnet). But when h6 sends reply to h1, then the dst_ip is considered of h1, which is under 10 subnet, and would now route via s1_1. Hence, to avoid this problem, we make the decision of selecting spine switch based on the larger of the two addresses. Hence, in this example packet between h1 (10.0.0.0) and h6 (11.0.1.0) will be travel via the spine switch s1_2 ('11 /8'), and not s1_1 ('10 /8'), because 11 > 10.
-    - Towards host layer switches (downwards): This is a simple decision based on the destination address of the host, the packet is output on the respective output port of leaf switch accordingly. For example, if the spine switch s2_1 gets a packet for host h2 (10.0.1.0), it will send it out to the host switch sh2 (10.0.1/24).
+- **For leaf layer switches**: For every packet that the leaf switch gets, there could be 2 situations; either the packet shall travel upwards towards the spine layer switches, or downwards towards the host layer switches. 
+    - ***Towards spine layer switches (upwards)***: We consider the larger of the src and dst subnets to find the spine layer switch to forward the packet. Reason for doing this (and not just basing the decision off of destination address) is because if we decide the spine layer switch only based on the destination address, then the request & reply packets will not follow the same route. For example, in the topology (sl=3, ll=2, hl=2), if h1 (10.0.0.0) wants to communicate with h6 (11.0.1.0), it will communicate via the switch s1_2 (because dst_ip is under 11 subnet). But when h6 sends reply to h1, then the dst_ip is considered of h1, which is under 10 subnet, and would now route via s1_1. Hence, to avoid this problem, we make the decision of selecting spine switch based on the larger of the two addresses. Hence, in this example packet between h1 (10.0.0.0) and h6 (11.0.1.0) will be travel via the spine switch s1_2 ('11 /8'), and not s1_1 ('10 /8'), because 11 > 10.
+    - ***Towards host layer switches (downwards)***: This is a simple decision based on the destination address of the host, the packet is output on the respective output port of leaf switch accordingly. For example, if the spine switch s2_1 gets a packet for host h2 (10.0.1.0), it will send it out to the host switch sh2 (10.0.1/24).
 
-- For host layer switches: For everypacket that the host layer switch gets, there could be 2 situations; either the packet is for that host under the subnet of that switch, or its not.
-    - Towards host: If the destination ip address corresponds to the address of the host attached to the host layer switch, then it is directly delivered to it (the only host attached to it).
-    - Towards leaf layer switches: If the destination ip address is anything but the above case, then it is sent upwards to the only leaf layer switch that the host is attached to.
+- **For host layer switches**: For everypacket that the host layer switch gets, there could be 2 situations; either the packet is for that host under the subnet of that switch, or its not.
+    - ***Towards host***: If the destination ip address corresponds to the address of the host attached to the host layer switch, then it is directly delivered to it (the only host attached to it).
+    - ***Towards leaf layer switches***: If the destination ip address is anything but the above case, then it is sent upwards to the only leaf layer switch that the host is attached to.
 
 ### Example
 1. Packet needs to be sent from h1 (10.0.0.0) to h10 (12.0.1.0). The path followed by the packet will be:
     - For **h1 to h10** (request): &nbsp; h1  &rarr;  sh1  &rarr;  s2_1  &rarr;  s1_3  &rarr;  s2_5  &rarr;  sh10  &rarr;  h10
     - For **h10 to h1** (reply): &nbsp; &nbsp; h10 &rarr;  sh10  &rarr;  s2_5  &rarr;  s1_3  &rarr;  s2_1  &rarr;  sh1 &rarr;  h1
-    </br> Note that the path followed by packet for request and reply must go through the same set of switches.
+    </br> Note that the path followed by packet for request and reply must go through the same set of switches (and hence the same set of substrate links).
 
 2. Packet needs to be sent from h5 (11.0.0.0) to h6 (11.0.1.0). The path followed by the packet will be:
     - For **h5 to h6** (request): &nbsp; h5  &rarr;  sh5  &rarr;  s2_3  &rarr;  sh6  &rarr;  h6
     - For **h6 to h5** (reply): &nbsp; &nbsp; h6  &rarr;  sh6  &rarr;  s2_3  &rarr;  sh5  &rarr;  h5
-    </br> Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example).
+    </br> Note that in this example the packet did not have to go till the spine layer at all (unlike in the previous example), because both hosts belong to same /16 subnet and hence were routed below the leaf-layer switches itself.
 </br>
 
 ![flow-table-example-diagram](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/flow_table_example.png?raw=true)
 
 ---
 
+# VNE Algorithm
+TODO
+explain ranking
+explain vne embedding
+explain nord_support file
+explain how anyone can add their algorithms here
+
+---
 
 # VNR Mapping
 
