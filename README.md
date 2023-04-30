@@ -235,19 +235,32 @@ The CPU performance is modeled using CPU control groups (cgroups). We make use o
 
 # Expected Results
 
-#### Shows how many VNRs were successfully mapped onto the substrate network (by using the selected VNE algorithm)
-In this example, mapping was found for 3 out of the 4 VNRs.
-![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results.png?raw=true)
+Shows how many VNRs were successfully mapped onto the substrate network (by using the selected VNE algorithm)
 
-#### CPU tests passing
+![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results.png?raw=true)
+In this example, mapping was found for 3 out of the 4 VNRs.
+
+### CPU tests passing
 ![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results_cpu.png?raw=true)
 
-#### Ping tests passing
-![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results_ping.png?raw=true)
+### Iperf tests passing
+<img src="https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results_iperf.png?raw=true" width="70%">
 
-#### Iperf tests passing
-![results](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results_iperf.png?raw=true)
 
+
+### Ping tests passing
+<img src="https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/results_ping.png?raw=true" width="90%">
+
+
+### Additional ping tests
+To demonstrate that VLANs are able to provide isolation between VNRs, we can run `pingall` between every pair of host in the network. 
+- As expected, all the substrate hosts are able to reach every other substrate host (h1, h2, h3, ..., h18), and no other virtual hosts. 
+- VNR1 has 4 virtual hosts (vnr1_vh1, vnr1_vh2, vnr1_vh3, vnr1_vh4); and as expected each virtual host of VNR1 is able to reach every other virtual host of VNR1, but not able to reach any other host (i.e. any substrate host or any host of VNR2 or VNR3).
+- Similar results can be observed for VNR2 and VNR3. Hence, isolation is achieved using VLANs in our emulator's network.
+
+
+<img src="https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/vlan_isolation_ping.png?raw=true" width="90%">
+('X' denotes that there is no reachability and ping failed for that host pair)
 
 ---
 
