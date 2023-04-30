@@ -60,7 +60,7 @@ The VNE emulator has the following main components:
 
 </br>
 </br>
-<img src="https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/emulator_architecture_diagram.png?raw=true" width="80%">
+<img src="https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/emulator_architecture_diagram.png?raw=true" width="85%">
 </br>
 
 
@@ -153,26 +153,32 @@ Since we want the path taken by any packet from one host to another host to be a
 
 - The ***VNE algorithm module*** does this *selection* of substrate resources for mapping of each VNR onto the substrate nework. Note that this module applies specified algorithm to select the substrate resources, but does not do the actual mapping yet. The actual mapping of VNR's virtual hosts onto the substrate network is handled in the next module (VNR mapping module).
 
-- We have currently implemented 5 VNE algorithms as part of the emulator. The code is extremely modular and allows *easy plug-in and integration of any VNE algorithms* in the future. Each of the currently implemented VNE algorithm typically first *ranks* the substrate hosts (to decide the order in which mappings shall be tried) and similarly ranks the virtual hosts of the VNRs. Then it tries an *embedding strategy* for mapping virtual hosts onto substrate hosts (i.e. node embedding), for example greedy VNE embedding, based on the ranked/order list of substrate hosts and virtual hosts. Note that in our emulator since we have *deterministic paths* between every pair of hosts, there is essentially no separate link embedding (and mainly only node embedding that needs to be performed). The 5 VNE algorithms implemented in our code are as follows:
-     - First Fit
-     - Worst Fit
-     - NORD
-     - NRM
-     - AHP
-  
-  
 - ***Additional data structures*** are maintained to model the network/graph, and keep track of the remaining bandwidths between links after VNRs are being mapped. When a virtual link is mapped onto the substrate network's link, the bandwidth of the substrate network is not directly reduced. Instead, this information is tracked using these additional graph data structures (Reason: If you directly reduce the bandwidth of the actual links on the mininet network, then later when you test with iperf, you'd not get the expected bandwidth because you've subtracted from that).
 The exact paths (deterministic) between every pair of hosts is initially populated. More information can be found here:
 https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/835fd8e4556d0622054f2b6b4738af64d8e659b4/vne/substrate.py#L195
 When the VNE algorithm runs to select set of substrate hosts (for mapping the virtual hosts of the VNR), it needs to check for CPU limits and bandwidth limits, and these data structures which we maintain are useful in doing all these checks.
+</br>
 
-TODO
-explain ranking
-explain vne embedding
-explain nord_support file
-explain how anyone can add their algorithms here
-
-TODO: Give an example of what this function returns to the vnr mapping module (cpu_reqs, bw_reqs, etc)
+### Implemented algorithms in code
+We have currently implemented 5 VNE algorithms as part of the emulator. The code is extremely modular and allows *easy plug-in and integration of any VNE algorithms* in the future. Each of the currently implemented VNE algorithm typically first *ranks* the substrate hosts (to decide the order in which mappings shall be tried) and similarly ranks the virtual hosts of the VNRs. Then it tries an *embedding strategy* for mapping virtual hosts onto substrate hosts (i.e. node embedding), for example greedy VNE embedding, based on the ranked/order list of substrate hosts and virtual hosts. Note that in our emulator since we have *deterministic paths* between every pair of hosts, there is essentially no separate link embedding (and mainly only node embedding that needs to be performed). The 5 VNE algorithms implemented in our code are as follows:
+- **First Fit**: Ranks substrate hosts & virtual hosts in the order in which they are provided. Performs greedy vne embedding of virtual hosts onto substrate hosts.
+- **Worst Fit**: Ranks substrate hosts in descending order of their remaining CPU capacity. Ranks virtual hosts in the order in which they are provided. Performs greedy vne embedding of virtual hosts onto substrate hosts.
+- **NORD**: Handles ranking of substrate & virtual hosts using NORD algorithm which follows the TOPSIS ranking strategy. Performs greedy vne embedding of virtual hosts onto substrate hosts.
+- **NRM**: Handles ranking of substrate & virtual hosts using NRM algorithm; followed by greedy vne embedding of virtual hosts onto substrate hosts.
+- **AHP**: Handles ranking of substrate & virtual hosts using Rematch AHP algorithm; followed by greedy vne embedding of virtual hosts onto substrate hosts.
+</br>
+  
+### To integrate your VNE algorithm in our emulator
+This section explains how we integrated the [NORD algorithm](https://www.sciencedirect.com/science/article/abs/pii/S1389128623001068) in our emulator. The same set of steps can be followed to integrate any other VNE algorithm.
+- The `vne_algorithm()` function in the module which selects which vne algorithm function to call based on the algorithm specified in the configuration file. https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/f79e856f7e53ee9d341541209b78d89866ed1b6b/vne/vne_algorithms.py#L176
+- The `_nord_algorithm()` function which is called by the previous function. https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/f79e856f7e53ee9d341541209b78d89866ed1b6b/vne/vne_algorithms.py#L41
+- A folder called `nord` is added in code which has all the NORD algorithm logic, and we add an additional `nord_support.py` file to handle conversion of data structures in our code convention to NORD's code convention. The main function in this file is `get_ranked_hosts()` which returns the ordered list of ranked substrate hosts, and ranked virtual hosts (in our code convention). https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/f79e856f7e53ee9d341541209b78d89866ed1b6b/vne/nord/nord_support.py#L129
+- The `ranked_virtual_hosts` and `ranked_substrate_hosts` are then fed into the `_greedy_vne_embedding()` function which returns the final set of selected substrate resources for mapping this VNR. https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/f79e856f7e53ee9d341541209b78d89866ed1b6b/vne/vne_algorithms.py#L63
+- The `vne_algorithm()` function is expected to return `cpu requirements for vnr mapping` and `bandwidth requirement for vnr mapping` in our code's convention, which will further be passed to the next module (VNR mapping) that will perform the actual mapping of VNR on substrate network. An example of values returned from the vne algorithm function is:
+     ```
+     cpu_reqs_for_vnr_mapping:  [('h15', 8), ('h28', 3), ('h6', 5), ('h11', 2), ('h42', 1)]
+     bw_reqs_for_vnr_mapping:  [('h6', 'h42', 2), ('h6', 'h15', 4), ('h6', 'h11', 1), ('h42', 'h28', 4), ('h15', 'h28', 4), ('h28', 'h11', 4)]
+     ```
 
 ---
 
@@ -228,22 +234,6 @@ The CPU performance is modeled using CPU control groups (cgroups). We make use o
 ---
 
 
-# VNE Algorithm
-
-The Virtual Network Embedding (VNE) algorithm is the actual logic for selecting the substrate network resources for mapping the Virtual Network Request. This involves mapping of the nodes/hosts and mapping of links onto substrate network's resources.
-
-## Additional data structures
-
-
-</br>
-
-## First fit algorithm
-As of now, we have implemented a simple first fit algorithm as the default VNE algorithm. It does the mapping just by going over every host in order and performing the mapping greedily if its possible, and ensures to satisfy all the requirements (bandwidth & CPU) as given by VNR tenant.
-
-## Worst fit algorithm
-In the worst fit algorithm, it does the mapping just by going over every host in decreasing order of their cpu capacity limits and performing the mapping greedily if its possible, and ensures to satisfy all the requirements (bandwidth & CPU) as given by VNR tenant.
-
----
 
 # Expected Results
 
