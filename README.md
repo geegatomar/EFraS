@@ -257,7 +257,7 @@ In this example, mapping was found for 3 out of the 4 VNRs.
 All the configurations with respect to generation of substrate network (number of hosts in substrate network, CPU limits for hosts, bandwidth limits for links of substrate network, etc.), generation of VNRs (number of VNRs, cpu & bandwidth requirements of VNRs, etc.), which VNE algorithm to use, etc. can all be specified in this [configurations.json](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/vne/configurations.json) file. When you execute the command `sudo python3 main.py` file to run the code, it will read from this configuration file.
 
 ### runner.py
-The `main.py` allows us to run one experiment at a time (based on the specified configurations). We extended this functionality to run multiple experiments over multiple iterations, for different number of VNRs and using different VNE algorithms at a time using the `runner.py` file. 
+The [main.py](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/vne/main.py) allows us to run one experiment at a time (based on the specified configurations). We extended this functionality to run multiple experiments over multiple iterations, for different number of VNRs and using different VNE algorithms at a time using the [runner.py](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/vne/runner.py) file. 
 Note that to run this file, you must make sure to specify all the configurations in the `configurations.json` file; especially these 3 configurations which are specific to this file (which main.py doesn't look at):
 ```
 Number of iterations to run for:   "iterations": 5,
@@ -266,7 +266,7 @@ List of number of VNRs to run for: "num_vnrs_list": [25, 50, 100]
 ```
 
 ### Results.xlsx
-The results from multiple experiments run in `runner.py` are captured in this excel file. The major columns captured are as follows:
+The results from multiple experiments run in [runner.py](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/vne/runner.py) are captured in this excel file. The major columns captured are as follows:
 - **seed**: The seed value used for pseudo-random generation of the network topology and VNRs.
 - **algorithm**: The algorithm used for virtual network embedding.
 - **revenue**: Sum of all demanded resources (cpu & bw) of VNRs.
