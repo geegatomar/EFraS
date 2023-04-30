@@ -87,7 +87,7 @@ The project work is broadly divided into the following parts:
 Spine-Leaf Architecture is a two-layer, full-mesh topology composed of a leaf layer and a spine layer, with the leaf and spine switches. </br>
 ![spine-and-leaf-architecture](https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/master/images/spine-and-leaf-architecture.jpg?raw=true)
 </br>
-The substrate network (i.e. physical network onto which Virtual Network Requests will be mapped) in our project follows a spine-leaf architecture. Although we have added an additional layer of switches, called the 'host switch layer' for each host. More on why we did this is in the sections below.
+The substrate network (i.e. physical network onto which Virtual Network Requests will be mapped) in our project follows a spine-leaf architecture, which is a common convention followed by modern day data centres. Although we have added an additional layer of switches, called the 'host switch layer' for each host. This is mainly for simplifying the implementation of virtual hosts' mapping; more on why we did this is in the sections below.
 
 </br>
 
