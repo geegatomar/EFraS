@@ -148,15 +148,36 @@ Since we want the path taken by any packet from one host to another host to be a
 ---
 
 # VNE Algorithm
+
+- So far we have established the entire substrate (physical) network in mininet. The pool of VNRs (virtual network requests) is also generated in our VNE emulator, and VNRs can also be ranked/ordered to decide in which order to try mapping them onto the substrate network. The next task is hence to find mappings for each of the VNRs. 
+
+- The ***VNE algorithm module*** does this *selection* of substrate resources for mapping of each VNR onto the substrate nework. Note that this module applies specified algorithm to select the substrate resources, but does not do the actual mapping yet. The actual mapping of VNR's virtual hosts onto the substrate network is handled in the next module (VNR mapping module).
+
+- We have currently implemented 5 VNE algorithms as part of the emulator. The code is extremely modular and allows *easy plug-in and integration of any VNE algorithms* in the future. Each of the currently implemented VNE algorithm typically first *ranks* the substrate hosts (to decide the order in which mappings shall be tried) and similarly ranks the virtual hosts of the VNRs. Then it tries an *embedding strategy* for mapping virtual hosts onto substrate hosts (i.e. node embedding), for example greedy VNE embedding, based on the ranked/order list of substrate hosts and virtual hosts. Note that in our emulator since we have *deterministic paths* between every pair of hosts, there is essentially no separate link embedding (and mainly only node embedding that needs to be performed). The 5 VNE algorithms implemented in our code are as follows:
+     - First Fit
+     - Worst Fit
+     - NORD
+     - NRM
+     - AHP
+  
+  
+- ***Additional data structures*** are maintained to model the network/graph, and keep track of the remaining bandwidths between links after VNRs are being mapped. When a virtual link is mapped onto the substrate network's link, the bandwidth of the substrate network is not directly reduced. Instead, this information is tracked using these additional graph data structures (Reason: If you directly reduce the bandwidth of the actual links on the mininet network, then later when you test with iperf, you'd not get the expected bandwidth because you've subtracted from that).
+The exact paths (deterministic) between every pair of hosts is initially populated. More information can be found here:
+https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/835fd8e4556d0622054f2b6b4738af64d8e659b4/vne/substrate.py#L195
+When the VNE algorithm runs to select set of substrate hosts (for mapping the virtual hosts of the VNR), it needs to check for CPU limits and bandwidth limits, and these data structures which we maintain are useful in doing all these checks.
+
 TODO
 explain ranking
 explain vne embedding
 explain nord_support file
 explain how anyone can add their algorithms here
 
+TODO: Give an example of what this function returns to the vnr mapping module (cpu_reqs, bw_reqs, etc)
+
 ---
 
 # VNR Mapping
+TODO: Change this intro
 
 So far we have established the substrate (physical) network. Next, we shall look at how to *map* the virtual nodes of the VNR (Virtual Network Request) onto the substrate network nodes, and how the IP addressing of the virtual hosts is performed. We explored multiple options for mapping virtual nodes onto physical nodes such as encapsulation, VXLAN, VLAN, etc. but ultimately chose to go ahead with the VLAN approach.
 
@@ -212,12 +233,7 @@ The CPU performance is modeled using CPU control groups (cgroups). We make use o
 The Virtual Network Embedding (VNE) algorithm is the actual logic for selecting the substrate network resources for mapping the Virtual Network Request. This involves mapping of the nodes/hosts and mapping of links onto substrate network's resources.
 
 ## Additional data structures
-We maintain additional data structures to model the network/graph, and keep track of the remaining bandwidths between links after VNRs are being mapped. When a virtual link is mapped onto the substrate network's link, the bandwidth of the substrate network is not directly reduced. Instead, this information is tracked using these additional graph data structures (Reason: If you directly reduce the bandwidth of the actual links on the mininet network, then later when you test with iperf, you'd not get the expected bandwidth because you've subtracted from that).
 
-The exact paths (deterministic) between every pair of hosts is initially populated. More information can be found here:
-https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/835fd8e4556d0622054f2b6b4738af64d8e659b4/vne/substrate.py#L195
-
-When the VNE algorithm runs to select set of substrate hosts (for mapping the virtual hosts of the VNR), it needs to check for CPU limits and bandwidth limits, and these data structures which we maintain are useful in doing all these checks.
 
 </br>
 
