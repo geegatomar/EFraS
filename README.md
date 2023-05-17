@@ -247,7 +247,7 @@ Every host in one VNR shall be reachable to every other host in the same VNR, an
 
 ### CRB/CPU limit tests
 We are making use of Mininet's runCpuLimitTest API to perform CPU tests; more info on which can be found here: http://mininet.org/api/classmininet_1_1net_1_1Mininet.html#acf267a82240ede837a66326b8d633fdf
-
+Similar to how iperf tests were performed, this also compares the 'expected cpu capacity' with the 'actual/obtained cpu capacity', and if they are close by (within a certain threshold), then the tests passes.
 https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/1016618c958c00aba1cb7bca5c11d46dd133ce07/vne/tests.py#L66
 
 ---
