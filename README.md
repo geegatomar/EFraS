@@ -230,6 +230,27 @@ The CPU performance is modeled using CPU control groups (cgroups). We make use o
 </br>
 
 ---
+# Tests
+
+### Iperf: Bandwidth limit tests
+Iperf is a commonly used open-source network performance testing tool. It allows you to measure the maximum achievable bandwidth between two endpoints (usually a client and a server) by generating network traffic.
+https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/1016618c958c00aba1cb7bca5c11d46dd133ce07/vne/tests.py#L38
+
+We run iperf tests between every pair of host and compare the 'expected bandwidth' and 'obtained/actual bandwidth' and pass the iperf test if their difference is under a certain defined threshold; else fail the iperf test.
+
+
+### Ping: Reachability tests
+Ping is a utility used to test the reachability and round-trip time (RTT) of a network host or IP address. It is commonly used to troubleshoot network connectivity issues and measure the response time between two devices on a network.
+https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/1016618c958c00aba1cb7bca5c11d46dd133ce07/vne/tests.py#L16
+Every host in one VNR shall be reachable to every other host in the same VNR, and not reachable to any other VNR's hosts.
+
+
+### CRB/CPU limit tests
+We are making use of Mininet's runCpuLimitTest API to perform CPU tests; more info on which can be found here: http://mininet.org/api/classmininet_1_1net_1_1Mininet.html#acf267a82240ede837a66326b8d633fdf
+
+https://github.com/geegatomar/Official-VNE-SDN-Major-Project/blob/1016618c958c00aba1cb7bca5c11d46dd133ce07/vne/tests.py#L66
+
+---
 
 
 
