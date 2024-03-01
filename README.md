@@ -1,4 +1,4 @@
-# Virtual Network Embedding (VNE) emulation using Mininet
+# EFraS: Emulated Framework to Develop and Analyze Dynamic Virtual Network Embedding Strategies over SDN Infrastructure
 
 
 ## Getting Started
@@ -13,7 +13,7 @@
 - **Instructions to run**:
     - Clone the repo </br>
         ```
-        $ git clone https://github.com/geegatomar/Official-VNE-SDN-Major-Project.git
+        $ git clone https://github.com/geegatomar/EFraS.git
         ```
         
     - Run the mininet code  </br>
