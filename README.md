@@ -1,4 +1,4 @@
-# EFraS: Emulated Framework to Develop and Analyze Virtual Network Embedding Strategies over SDN Infrastructure
+# FraS: Framework for  Developing and Analyzing Virtual Network Embedding Strategies
 
 
 ## Getting Started
